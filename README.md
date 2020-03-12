@@ -1,9 +1,12 @@
 ## 问答社区 <br/>
 ## 资料 <br/>
-依赖资源：https://spring.io/guides <br/>
-依赖资源：https://spring.io/guides/gs.serving-wed-content/ <br/>
-对标网站：https://elasticsearch.cn/explore <br/>
-使用git_hub账号进行标记：https://developer.github.com/apps/building-github-apps/creating-a-github-app/
+[Spring文档](https://spring.io/guides) <br/>
+[SpringWEB文档](https://spring.io/guides/gs.serving-wed-content/) <br/>
+[对标社区网站](https://elasticsearch.cn/explore) <br/>
+[Github deploy key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
+[Bootstrap](https://v3.bootcss.com/getting-started/)
+[Github OAuth文档](https://developer.github.com/apps/building-github-apps/creating-a-github-app/)
 ## 工具 <br/>
-Git <br/>
+[Git](https://git-scm.com/download) <br/>
+[Visual Paradigm](https://www.visual-paradigm.com)<br/>
 IntelliJ IDEA <br/>
