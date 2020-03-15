@@ -1,5 +1,7 @@
 package ac_one.gqw1024.community.ac_one_community.controller;
 
+import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +17,12 @@ import java.util.concurrent.Executors;
 @Controller
 public class IndexController {
     @GetMapping("/")
-    public ModelAndView meeting(@RequestParam(name = "name",required = false,defaultValue = "GQW") String name, ModelAndView modelAndView){
+    public ModelAndView meeting(ModelAndView modelAndView){
         modelAndView.setViewName("index");
-        //modelAndView.addObject("name",name);
         return modelAndView;
+    }
+    @RequestMapping("index")
+    public String index(){
+        return "index";
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Component //将这个类扫描注入到IOC容器，以便于后续使用
 public class GithubProvider {
@@ -20,7 +21,8 @@ public class GithubProvider {
     public String getAccessToken(AccessTockenDTO accessTockenDTO) throws IOException{
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");//请求体类型，以及编码格式
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS).build();
 
             RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(accessTockenDTO));//创建请求体
             Request request = new Request.Builder()
@@ -46,7 +48,8 @@ public class GithubProvider {
      */
     public GithubUser getUser(String access_token){
         //get请求发送步骤
-        OkHttpClient client = new OkHttpClient();// 1 创建 OkHttpClient
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS).build();// 1 创建 OkHttpClient , 由于是外国网站，可能会超时，所以放宽时限
         Request request = new Request.Builder() // 2 创建请求[Request]
                 .url("https://api.github.com/user?access_token="+access_token)
                 .build();
