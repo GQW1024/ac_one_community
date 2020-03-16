@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import sun.net.www.http.HttpClient;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.concurrent.Executors;
  * Github用户信息处理Conntroller
  */
 @Controller
-@SessionAttributes({"user"})//将对应的用户信息存入session
+//@SessionAttributes({"user"})//将对应的用户信息存入session
 public class AuthorizeConntroller {
 
     @Autowired  //自动装配
@@ -71,16 +72,27 @@ public class AuthorizeConntroller {
         //System.out.println(access_token);
         GithubUser githubUser = githubProvider.getUser(access_token);//通过access_token向github获取用户信息
         if(githubUser != null) {  //用户信息不为空
-            if (userMapper.selectUserByName(githubUser.getId().toString()) == null) {//且数据库中没有用户信息
+            if (userMapper.findByName(githubUser.getId().toString()) == null) {//且数据库中没有用户信息
                 user = new User();
-                user.setToken(UUID.randomUUID().toString());//设置唯一的 tocken ,UUID的随机ID本身就有唯一属性
+                String token = UUID.randomUUID().toString();
+                user.setToken(token);//设置唯一的 tocken 标识该用户,UUID的随机ID本身就有唯一属性
                 user.setName(githubUser.getName());
                 user.setAccount_id(String.valueOf(githubUser.getId()));
                 user.setGmt_create(System.currentTimeMillis());
                 user.setGmt_modified(user.getGmt_create());
                 userMapper.insertUser(user); //插入当前用户的数据
-                modelAndView.addObject("user", user);//将 生成的 用户信息返回到前端，随后存入session
-            }else if (( user = userMapper.selectUserByName(githubUser.getId().toString()) ) != null){//否则，数据库中也迅有该用户的信息，则直接取出并赋值给user
+
+                Cookie ctoken = new Cookie("token", token);
+                ctoken.setMaxAge(7 * 24 * 60 * 60);//设置为7天过期
+                response.addCookie(ctoken);//将用户专属的token存入cookie,使得首页每次可以通过token来查找数据库，确定当前用户信息
+
+                //modelAndView.addObject("user", user);//将 生成的 用户信息返回到前端，随后存入session
+            }else if (( user = userMapper.findByName(githubUser.getId().toString()) ) != null){//否则，数据库中也迅有该用户的信息，则直接取出并赋值给user
+
+                Cookie ctoken = new Cookie("token", user.getToken());
+                ctoken.setMaxAge(7 * 24 * 60 * 60);//设置为7天过期
+                response.addCookie(ctoken);
+
                 modelAndView.addObject("user", user);//将用户信息返回到前端，随后存入session
             }
         }
@@ -90,12 +102,11 @@ public class AuthorizeConntroller {
     }
 
     @RequestMapping("/doLoginOut")//登出
-    public String doLogin(HttpSession session, SessionStatus sessionStatus){
-        //userService.updateisRegister(0,uid);//将用户设为下线
-        session.removeAttribute("user");
-        session.invalidate();//无效化session删除这次的用户会话信息
-        sessionStatus.setComplete();//提交当前session状态
-        return "index";
+    public String doLogin(HttpServletResponse response){
+        Cookie ctoken = new Cookie("token",null);
+        ctoken.setMaxAge(0);
+        response.addCookie(ctoken);
+        return "redirect:/";
     }
 }
 

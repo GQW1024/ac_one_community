@@ -68,6 +68,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
@@ -93,6 +94,22 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!--flyway,用于数据库版本控制, flyway 其实仅依赖 spring-boot-starter-jdbc 包-->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>6.3.1</version>
+                <configuration><!--用于链接数据源信息-->
+                    <user>root</user>
+                    <password>123456</password>
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <url>jdbc:mysql://127.0.0.1:3306/ac_one_community?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=CONVERT_TO_NULL&amp;useSSL=false&amp;serverTimezone=GMT</url>
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                    <!-- //sql脚本位置，flyway会自动去找到这个目录并且执行里面的sql脚本 -->
+                    <locations>classpath:db/migration/</locations>
+                </configuration>
             </plugin>
         </plugins>
     </build>

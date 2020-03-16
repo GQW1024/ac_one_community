@@ -10,3 +10,7 @@
 [Git](https://git-scm.com/download) <br/>
 [Visual Paradigm](https://www.visual-paradigm.com)<br/>
 IntelliJ IDEA <br/>
+## 脚本
+```sql
+
+```
