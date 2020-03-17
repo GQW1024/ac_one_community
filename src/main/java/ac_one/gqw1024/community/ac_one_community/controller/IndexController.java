@@ -43,7 +43,7 @@ public class IndexController {
 
         return modelAndView;
     }
-    @RequestMapping("index")
+    @RequestMapping("/index")
     public String index(){
         return "index";
     }

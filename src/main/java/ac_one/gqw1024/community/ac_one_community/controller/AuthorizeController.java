@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
  */
 @Controller
 //@SessionAttributes({"user"})//将对应的用户信息存入session
-public class AuthorizeConntroller {
+public class AuthorizeController {
 
     @Autowired  //自动装配
     private GithubProvider githubProvider;//github用户信息提供者
