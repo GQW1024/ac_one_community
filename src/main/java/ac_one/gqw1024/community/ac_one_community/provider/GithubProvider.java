@@ -1,6 +1,6 @@
 package ac_one.gqw1024.community.ac_one_community.provider;
 
-import ac_one.gqw1024.community.ac_one_community.dto.AccessTockenDTO;
+import ac_one.gqw1024.community.ac_one_community.dto.AccessTokenDTO;
 import ac_one.gqw1024.community.ac_one_community.dto.GithubUser;
 import com.alibaba.fastjson.JSON;
 import okhttp3.*;
@@ -10,15 +10,18 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 此类用于获取accesstoken以及通过accesstoken获取用户信息
+ */
 @Component //将这个类扫描注入到IOC容器，以便于后续使用
 public class GithubProvider {
     /**
-     *
+     *  获取github用户的accesstoken，类似于访问用户信息的【令牌】
      * @param accessTockenDTO 请求access_token所需要的参数，主要有code等...
      * @return
      * @throws IOException
      */
-    public String getAccessToken(AccessTockenDTO accessTockenDTO) throws IOException{
+    public String getAccessToken(AccessTokenDTO accessTockenDTO) throws IOException{
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");//请求体类型，以及编码格式
 
         OkHttpClient client = new OkHttpClient.Builder()

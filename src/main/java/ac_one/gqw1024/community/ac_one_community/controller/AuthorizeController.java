@@ -1,7 +1,7 @@
 package ac_one.gqw1024.community.ac_one_community.controller;
 
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
-import ac_one.gqw1024.community.ac_one_community.dto.AccessTockenDTO;
+import ac_one.gqw1024.community.ac_one_community.dto.AccessTokenDTO;
 import ac_one.gqw1024.community.ac_one_community.dto.GithubUser;
 import ac_one.gqw1024.community.ac_one_community.model.User;
 import ac_one.gqw1024.community.ac_one_community.provider.GithubProvider;
@@ -44,7 +44,7 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     String redirect_uri; //返回access_token的接口，/callback
 
-    private User user;
+    private User user;//社区用户
 
     @Autowired
     private UserMapper userMapper;
@@ -58,11 +58,15 @@ public class AuthorizeController {
      * @return
      */
     @RequestMapping("/callback")
-    public ModelAndView collback(@RequestParam(name = "code",required = false) String code,
-                                 @RequestParam(name = "state",required = false) String state,
-                                 HttpServletResponse response,
-                                 ModelAndView modelAndView) throws IOException {
-        AccessTockenDTO tockenDTO = new AccessTockenDTO();
+    public ModelAndView collback(
+            @RequestParam(name = "code",required = false) String code,
+            @RequestParam(name = "state",required = false) String state,
+            HttpServletResponse response,
+            ModelAndView modelAndView) throws IOException {
+
+        modelAndView.setViewName("redirect:/");//设置重定向目标为首页
+
+        AccessTokenDTO tockenDTO = new AccessTokenDTO();
         tockenDTO.setClient_id(clientID); //Github上创建的 OAuth app 所持有的标识
         tockenDTO.setClient_secret(clientSecret);  //Github上创建的 OAuth app 所持有的标识
         tockenDTO.setCode(code);
@@ -71,8 +75,15 @@ public class AuthorizeController {
         String access_token =githubProvider.getAccessToken(tockenDTO);//获得返回的用户认证：access_token，并将其转为JSON字符串，方便使用        modelAndView.setViewName("index");
         //System.out.println(access_token);
         GithubUser githubUser = githubProvider.getUser(access_token);//通过access_token向github获取用户信息
-        if(githubUser != null) {  //用户信息不为空
-            if (userMapper.findByName(githubUser.getId().toString()) == null) {//且数据库中没有用户信息
+        if(githubUser != null && githubUser.getId() != null) {  //用户信息不为空
+
+            if (( user = userMapper.findByAccountID(githubUser.getId().toString()) ) != null) {//如果，数据库中存有该用户的信息,将其取出后
+                Cookie ctoken = new Cookie("token", user.getToken());
+                ctoken.setMaxAge(7 * 24 * 60 * 60);//设置为7天过期
+                response.addCookie(ctoken);
+                return modelAndView;
+            }
+            else if (userMapper.findByAccountID(githubUser.getId().toString()) == null) {//否则，数据库中没有用户信息
                 user = new User();
                 String token = UUID.randomUUID().toString();
                 user.setToken(token);//设置唯一的 tocken 标识该用户,UUID的随机ID本身就有唯一属性
@@ -80,32 +91,27 @@ public class AuthorizeController {
                 user.setAccount_id(String.valueOf(githubUser.getId()));
                 user.setGmt_create(System.currentTimeMillis());
                 user.setGmt_modified(user.getGmt_create());
+                user.setAvatarUrl(githubUser.getAvatar_url());//用户的头像
                 userMapper.insertUser(user); //插入当前用户的数据
 
-                Cookie ctoken = new Cookie("token", token);
-                ctoken.setMaxAge(7 * 24 * 60 * 60);//设置为7天过期
-                response.addCookie(ctoken);//将用户专属的token存入cookie,使得首页每次可以通过token来查找数据库，确定当前用户信息
-
-                //modelAndView.addObject("user", user);//将 生成的 用户信息返回到前端，随后存入session
-            }else if (( user = userMapper.findByName(githubUser.getId().toString()) ) != null){//否则，数据库中也迅有该用户的信息，则直接取出并赋值给user
-
-                Cookie ctoken = new Cookie("token", user.getToken());
-                ctoken.setMaxAge(7 * 24 * 60 * 60);//设置为7天过期
-                response.addCookie(ctoken);
-
-                modelAndView.addObject("user", user);//将用户信息返回到前端，随后存入session
+                Cookie ctoken = new Cookie("token", token);//将用户专属的token存入cookie,使得首页每次可以通过token来查找数据库，确定当前用户信息
+                ctoken.setMaxAge(7 * 24 * 60 * 60);//设置cookie为7天过期
+                response.addCookie(ctoken);//向前端存入带有token的cookie,当重定向后，首页加载时会自动根据该token从数据库中查找信息
+                return modelAndView;
             }
         }
-        modelAndView.setViewName("redirect:/");
         return modelAndView;
         //System.out.println(user.toString());
     }
 
     @RequestMapping("/doLoginOut")//登出
-    public String doLogin(HttpServletResponse response){
+    public String doLoginout(HttpServletResponse response,HttpSession session,SessionStatus sessionStatus){
         Cookie ctoken = new Cookie("token",null);
         ctoken.setMaxAge(0);
         response.addCookie(ctoken);
+        session.removeAttribute("user");
+        session.invalidate();//无效化session删除这次的用户会话信息
+        sessionStatus.setComplete();
         return "redirect:/";
     }
 }

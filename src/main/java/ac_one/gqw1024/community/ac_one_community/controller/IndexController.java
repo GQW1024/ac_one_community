@@ -2,7 +2,10 @@ package ac_one.gqw1024.community.ac_one_community.controller;
 
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.model.User;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 首页Cntroller
@@ -23,7 +27,7 @@ import java.util.concurrent.Executors;
 @SessionAttributes({"user"})//将对应的用户信息存入session
 public class IndexController {
 
-    Cookie[] cookies;
+    Cookie[] cookies;//前端的cookie集合
 
     @Autowired
     private UserMapper userMapper;

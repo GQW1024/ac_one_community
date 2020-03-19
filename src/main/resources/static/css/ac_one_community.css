@@ -8,6 +8,6 @@ body{
     background-color: white;
 }
 .btn_publish{
+    margin-top: 5px;
     float: right;
-    margin-bottom: 15px;
 }
