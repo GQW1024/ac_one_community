@@ -1,11 +1,10 @@
 package ac_one.gqw1024.community.ac_one_community.provider;
 
-import ac_one.gqw1024.community.ac_one_community.dto.AccessTokenDTO;
+import ac_one.gqw1024.community.ac_one_community.dto.AccessTokenDto;
 import ac_one.gqw1024.community.ac_one_community.dto.GithubUser;
 import com.alibaba.fastjson.JSON;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +20,7 @@ public class GithubProvider {
      * @return
      * @throws IOException
      */
-    public String getAccessToken(AccessTokenDTO accessTockenDTO) throws IOException{
+    public String getAccessToken(AccessTokenDto accessTockenDTO) throws IOException{
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");//请求体类型，以及编码格式
 
         OkHttpClient client = new OkHttpClient.Builder()
@@ -59,8 +58,7 @@ public class GithubProvider {
         try {
             Response response = client.newCall(request).execute();// 3 利用OkHttpClient来将请求提交发送出去
             //由于接收过来的已经是JSON格式的数据了，所以这里直接用parseObject()方法直接转为GithubUser类型返回。
-            return JSON.parseObject(response.body().string(),GithubUser.class);
-
+            return JSON.parseObject(response.body().string(),GithubUser.class);//fastjson会自动识别下划线，转为驼峰命名
         } catch (IOException e) {
             e.printStackTrace();
         }

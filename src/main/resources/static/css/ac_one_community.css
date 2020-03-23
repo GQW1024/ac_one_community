@@ -11,3 +11,12 @@ body{
     margin-top: 5px;
     float: right;
 }
+.main_list_item_imgSize{
+    width: 40px;
+    height: 40px;
+}
+.text_desc{
+    font-size: 12px;
+    font-weight: normal;
+    color: #999;
+}

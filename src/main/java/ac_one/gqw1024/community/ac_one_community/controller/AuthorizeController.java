@@ -1,29 +1,22 @@
 package ac_one.gqw1024.community.ac_one_community.controller;
 
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
-import ac_one.gqw1024.community.ac_one_community.dto.AccessTokenDTO;
+import ac_one.gqw1024.community.ac_one_community.dto.AccessTokenDto;
 import ac_one.gqw1024.community.ac_one_community.dto.GithubUser;
 import ac_one.gqw1024.community.ac_one_community.model.User;
 import ac_one.gqw1024.community.ac_one_community.provider.GithubProvider;
-import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-import sun.net.www.http.HttpClient;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Github用户信息处理Conntroller
@@ -66,7 +59,7 @@ public class AuthorizeController {
 
         modelAndView.setViewName("redirect:/");//设置重定向目标为首页
 
-        AccessTokenDTO tockenDTO = new AccessTokenDTO();
+        AccessTokenDto tockenDTO = new AccessTokenDto();
         tockenDTO.setClient_id(clientID); //Github上创建的 OAuth app 所持有的标识
         tockenDTO.setClient_secret(clientSecret);  //Github上创建的 OAuth app 所持有的标识
         tockenDTO.setCode(code);
@@ -75,7 +68,7 @@ public class AuthorizeController {
         String access_token =githubProvider.getAccessToken(tockenDTO);//获得返回的用户认证：access_token，并将其转为JSON字符串，方便使用        modelAndView.setViewName("index");
         //System.out.println(access_token);
         GithubUser githubUser = githubProvider.getUser(access_token);//通过access_token向github获取用户信息
-        if(githubUser != null && githubUser.getId() != null) {  //用户信息不为空
+        if(githubUser != null && githubUser.getId() != null) {  //双重保险，用户信息不为空
 
             if (( user = userMapper.findByAccountID(githubUser.getId().toString()) ) != null) {//如果，数据库中存有该用户的信息,将其取出后
                 Cookie ctoken = new Cookie("token", user.getToken());
@@ -88,10 +81,10 @@ public class AuthorizeController {
                 String token = UUID.randomUUID().toString();
                 user.setToken(token);//设置唯一的 tocken 标识该用户,UUID的随机ID本身就有唯一属性
                 user.setName(githubUser.getName());
-                user.setAccount_id(String.valueOf(githubUser.getId()));
-                user.setGmt_create(System.currentTimeMillis());
-                user.setGmt_modified(user.getGmt_create());
-                user.setAvatarUrl(githubUser.getAvatar_url());//用户的头像
+                user.setAccountId(String.valueOf(githubUser.getId()));
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                user.setAvatarUrl(githubUser.getAvatarUrl());//用户的头像
                 userMapper.insertUser(user); //插入当前用户的数据
 
                 Cookie ctoken = new Cookie("token", token);//将用户专属的token存入cookie,使得首页每次可以通过token来查找数据库，确定当前用户信息

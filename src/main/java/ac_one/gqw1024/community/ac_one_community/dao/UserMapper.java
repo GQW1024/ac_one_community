@@ -8,14 +8,17 @@ import org.springframework.stereotype.Repository;
 @Repository  //将Mapper注入到SpringIOC容器中
 public interface UserMapper {
 
-    @Insert("insert into user(account_id,name,token,gmt_create,gmt_modified,avatar_url) values(#{account_id},#{name},#{token},#{gmt_create},#{gmt_modified},#{avatarUrl})")
+    @Insert("insert into user(account_id,name,token,gmt_create,gmt_modified,avatar_url) values(#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
     int insertUser(User user);//插入用户信息
 
     @Delete("delete from user where id = #{id}")
     int deltById(@Param("id") int id);//以用户id为key删除用户信息
 
-    @Select("select * from user where account_id = #{account_id}")
-    User findByAccountID(@Param("account_id")String account_id);//以用户id为key查询用户信息
+    @Select("select * from user where account_id = #{accountId}")
+    User findByAccountID(@Param("accountId")String account_id);//以用户的account_id为条件查询用户信息
+
+    @Select("select * from user where id = #{id}")
+    User findByID(@Param("id")int id);//以用户的id为条件查询用户的信息
 
     @Select("select * from user where token = #{token}")
     User findByToken(@Param("token")String token);//以用户token为key查询用户信息

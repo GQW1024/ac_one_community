@@ -31,7 +31,8 @@ public class PublishController {
             for (Cookie c : cookies) {
                 if(c.getName().equals("token")){
                     User user = userMapper.findByToken(c.getValue());
-                    modelAndView.addObject("user", user);
+                    request.getSession().setAttribute("user",user);
+                    //modelAndView.addObject("user", user);
                     break;
                 }
             }
@@ -44,14 +45,14 @@ public class PublishController {
             @RequestParam("creator")Integer creator,
             @RequestParam("title")String title,
             @RequestParam("description")String description,
-            @RequestParam("tag")String question_tag,
+            @RequestParam("tag")String questionTag,
             ModelAndView modelAndView){
-        if(creator == null || title.isEmpty() || description.isEmpty() || question_tag.isEmpty()){
+        if(creator == null || title.isEmpty() || description.isEmpty() || questionTag.isEmpty()){
             modelAndView.addObject("error","错误提交！可能存在空值");
 
             modelAndView.addObject("title",title);//保证前端就算出错，已填写的数据也不消失
             modelAndView.addObject("description",description);
-            modelAndView.addObject("question_tag",question_tag);
+            modelAndView.addObject("questionTag",questionTag);
 
             modelAndView.setViewName("publish");
             return modelAndView;
@@ -60,13 +61,13 @@ public class PublishController {
         question.setCreator(creator);
         question.setTitle(title);
         question.setDescription(description);
-        question.setQuestion_tag(question_tag);
-        question.setGmt_create(System.currentTimeMillis());
-        question.setGmt_modified(question.getGmt_create());
+        question.setQuestionTag(questionTag);
+        question.setGmtCreate(System.currentTimeMillis());
+        question.setGmtModified(question.getGmtCreate());
         questionMapper.create(question);
-        System.out.println("creator="+creator+" title="+title+" description="+description+" tag"+question_tag);
-        modelAndView.addObject("success","您已发布成功!");
-        modelAndView.setViewName("publish");
+        System.out.println("creator="+creator+" title="+title+" description="+description+" tag"+questionTag);
+        modelAndView.addObject("success",true);
+        modelAndView.setViewName("redirect:/publish");
         return modelAndView;
     }
 }

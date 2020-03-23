@@ -6,7 +6,7 @@ import lombok.Data;
  * 此类是，从Github上获取用户的accesstoken所必须的参数集合
  */
 @Data
-public class AccessTokenDTO {
+public class AccessTokenDto {
     private String client_id;
     private String client_secret;
     private String code;

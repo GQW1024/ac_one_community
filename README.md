@@ -6,6 +6,7 @@
 [Github deploy key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
 [Bootstrap](https://v3.bootcss.com/getting-started/)
 [Github OAuth文档](https://developer.github.com/apps/building-github-apps/creating-a-github-app/)
+[Thymeleaf官方文档](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#setting-attrubute-value)
 ## 工具 <br/>
 [Git](https://git-scm.com/download) <br/>
 [Visual Paradigm](https://www.visual-paradigm.com)<br/>
