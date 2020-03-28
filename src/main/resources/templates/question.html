@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${questionDto.title}"></title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/ac_one_community.css">
+
+    <!--Jquery.js-->
+    <script src="/js/jquery-3.2.1.min.js" type="application/javascript"></script>
+    <!-- Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+<div th:replace="~{navgition::nav}"></div><!--引入navgition.html中定义好的导航栏-->
+<div class="container-fluid main profile"><!-- container-fluid begin-->
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span th:text="${questionDto.title}"></span></h2>
+            <span class="text_desc_question">
+                作者:<span th:text="${questionDto.questionCreater.name}"></span> |
+                发布时间:<span th:text="${#dates.format(questionDto.gmtCreate,'YYYY-MM-dd HH:mm')}"></span> |
+                <span th:text="${questionDto.viewCount}"></span>次浏览
+            </span>
+            <hr>
+            <hr>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDto.description}"></div>
+            <br/>
+            <hr>
+            <hr>
+            <a class="text-color-999" th:href="@{'/publish/'+${questionDto.id}}">
+                <span class="glyphicon glyphicon-pencil"></span>
+                    编辑
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 right-section" >
+                <h4>发布人</h4>
+                <div class="media">
+                    <div class="media-left">
+                        <a  href="#">
+                            <img class="media-object img-circle main_list_item_imgSize" th:src="${questionDto.questionCreater.avatarUrl}" alt="...">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h5 class="media-heading">
+                            <a href="#" th:text="${questionDto.questionCreater.name}"></a>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                <h4>相关问题</h4>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -4,6 +4,7 @@ import ac_one.gqw1024.community.ac_one_community.dao.QuestionMapper;
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.model.Question;
 import ac_one.gqw1024.community.ac_one_community.model.User;
+import ac_one.gqw1024.community.ac_one_community.provider.CookieUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 @SessionAttributes({"user"})//将对应的用户信息存入session
 public class PublishController {
 
-    Cookie[] cookies;//前端的cookie集合
-
     @Autowired
     private UserMapper userMapper;
 
@@ -26,20 +25,25 @@ public class PublishController {
 
     @GetMapping("/publish")
     public ModelAndView publish(ModelAndView modelAndView, HttpServletRequest request){
-        modelAndView.setViewName("publish");
-        if ((cookies = request.getCookies())!=null){
-            for (Cookie c : cookies) {
-                if(c.getName().equals("token")){
-                    User user = userMapper.findByToken(c.getValue());
-                    request.getSession().setAttribute("user",user);
-                    //modelAndView.addObject("user", user);
-                    break;
-                }
-            }
+
+        User user =(User) request.getSession().getAttribute("user");
+        if (user==null){//如果用户没有登录，直接返回主页
+            modelAndView.setViewName("index");
+            return modelAndView;
         }
+        modelAndView.setViewName("publish");
         return modelAndView;
     }
 
+    /**
+     * 上传用户提交的信息
+     * @param creator
+     * @param title
+     * @param description
+     * @param questionTag
+     * @param modelAndView
+     * @return
+     */
     @PostMapping("/dopublish")
     public ModelAndView dopublish(
             @RequestParam("creator")Integer creator,

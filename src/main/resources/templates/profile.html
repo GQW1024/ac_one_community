@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${sectionName}"></title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/ac_one_community.css">
+
+    <!--Jquery.js-->
+    <script src="/js/jquery-3.2.1.min.js" type="application/javascript"></script>
+    <!-- Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+<div th:replace="~{navgition::nav}"></div><!--引入navgition.html中定义好的导航栏-->
+<div class="container-fluid main"><!-- container-fluid begin-->
+    <div th:if="${session.user} ne null" class="row">
+        <div th:replace="~{userquestionlist::user_question_list}"></div><!--问题区块-->
+        <div th:if="${section eq 'replies'}" class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span th:text="${sectionName}"></span></h2>
+            <hr>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+            <div class="list-group right-section">
+                <a th:class="${section eq 'questions'}?'list-group-item active':'list-group-item'" href="/profile/questions">我的发布</a>
+                <a th:class="${section eq 'replies'}?'list-group-item active':'list-group-item'" href="/profile/replies">
+                    最新回复
+                    <span class="badge">44</span>
+                </a>
+            </div>
+            <hr/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

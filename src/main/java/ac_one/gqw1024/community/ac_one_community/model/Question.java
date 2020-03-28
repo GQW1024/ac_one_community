@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Question {
     private Integer id;//问题的id
-    private Integer creator;//问题创建者，提出该问题的用户的account_id
+    private Integer creator;//问题创建者，提出该问题的用户的id
     private String title;//问题的标题
     private String questionType = "default_type";//问题的类型
     private String description;//问题的内容

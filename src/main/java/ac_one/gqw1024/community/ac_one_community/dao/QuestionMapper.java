@@ -31,10 +31,26 @@ public interface QuestionMapper {
      */
     @Select("select * from question order by gmt_create ,view_count , comment_count ASC limit #{pageOffect},#{pageSize}")
     List<Question> pageList(@Param("pageOffect") int pageOffect,@Param("pageSize") int pageSize);
+    /**
+     * 查询用户本人发布的问题
+     * 先按创建日期进行排序，如果相等，则继续按阅读数排序，如果还想等，则再按评论数排序，都排好序后，再按指定【页码】与【页内条数】进行分页
+     * 从第pageOffect 条记录开始开始，查询 pageSize条记录
+     * @param userid
+     * @param pageOffect
+     * @param pageSize
+     * @return
+     */
+    @Select("select * from question where creator=#{userid} order by gmt_create ,view_count , comment_count ASC limit #{pageOffect},#{pageSize}")
+    List<Question> userpageList(@Param("userid")int userid,@Param("pageOffect") int pageOffect,@Param("pageSize") int pageSize);
 
     /**
      * 查询记录数
      */
     @Select("select count(*) from question")
     int listCount();
+    /**
+     * 查询指定用户的记录数
+     */
+    @Select("select count(*) from question where creator = #{userid}")
+    int listCountByUserID(@Param("userid") int userid);
 }

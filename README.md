@@ -7,6 +7,7 @@
 [Bootstrap](https://v3.bootcss.com/getting-started/)
 [Github OAuth文档](https://developer.github.com/apps/building-github-apps/creating-a-github-app/)
 [Thymeleaf官方文档](https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#setting-attrubute-value)
+[Spring拦截器官方文档](https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/web.html#mvc-handlermapping-interceptor)
 ## 工具 <br/>
 [Git](https://git-scm.com/download) <br/>
 [Visual Paradigm](https://www.visual-paradigm.com)<br/>

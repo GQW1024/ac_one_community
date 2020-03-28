@@ -1,6 +1,9 @@
 body{
     background-color: #efefef;
 }
+a{
+    text-decoration: none;
+}
 .main{
     margin-top: 30px;
     margin-left: 60px;
@@ -19,4 +22,17 @@ body{
     font-size: 12px;
     font-weight: normal;
     color: #999;
+}
+.text_desc_question{
+    font-size: 14px;
+    font-weight: normal;
+    color: #999;
+}
+.text-color-999{
+    font-size: 13px;
+    color: #999;
+}
+.right-section{
+    margin-top: 40px;
+    margin-bottom: 20px;
 }
