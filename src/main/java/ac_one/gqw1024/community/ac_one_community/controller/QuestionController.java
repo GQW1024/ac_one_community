@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ListIterator;
 
 @Controller
 public class QuestionController {
 
     @Autowired
-    QuestionService questionService;
+    private QuestionService questionService;
 
     @GetMapping("/question/{id}")
     public ModelAndView question(
@@ -23,11 +24,6 @@ public class QuestionController {
             HttpServletRequest request,
             ModelAndView modelAndView){
 
-//        User user =(User) request.getSession().getAttribute("user");
-//        if (user==null){
-//            modelAndView.setViewName("index");
-//            return modelAndView;
-//        }
         QuestionDto questionDto = questionService.getQuestionDtoById(id);//使用问题id来获取整合了用户与问题信息的QuestionDto对象
         if(questionDto != null){//如果信息不为空，则将信息添加至model,返回到正常页面
             modelAndView.addObject("questionDto",questionDto);

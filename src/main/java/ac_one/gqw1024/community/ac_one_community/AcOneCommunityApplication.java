@@ -1,6 +1,7 @@
 package ac_one.gqw1024.community.ac_one_community;
 
 import ac_one.gqw1024.community.ac_one_community.interceptors.SessionInterceptor;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 @SpringBootApplication
+@MapperScan("ac_one.gqw1024.community.ac_one_community.dao")//扫描生成实现类，但是这个注解并不会不会注入SpringIOC
 public class AcOneCommunityApplication extends WebMvcConfigurationSupport {
 
     @Autowired

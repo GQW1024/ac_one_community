@@ -30,4 +30,7 @@ create table user
 ```
 ```bash
 mvn flyway:migrate
+mvn mybatis-generator:generate   MyBatis Generator生成命令，不会覆盖原有同名文件
+ps:在使用覆盖生成命令之前，一定要记得把所有的Mapper删干净，防止出现：...with such name already exists  错误导致服务器启动失败
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate  MyBatis Generator生成命令，覆盖原有同名文件，
 ```

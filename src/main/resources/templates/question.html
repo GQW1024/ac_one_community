@@ -32,7 +32,7 @@
             <br/>
             <hr>
             <hr>
-            <a class="text-color-999" th:href="@{'/publish/'+${questionDto.id}}">
+            <a class="text-color-999" th:if="${session.user ne null && session.user.id eq questionDto.questionCreater.id}" th:href="@{'/publish/'+${questionDto.id}}">
                 <span class="glyphicon glyphicon-pencil"></span>
                     编辑
             </a>

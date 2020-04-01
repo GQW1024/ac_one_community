@@ -5,8 +5,10 @@ import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
 import ac_one.gqw1024.community.ac_one_community.dto.QuestionDto;
 import ac_one.gqw1024.community.ac_one_community.model.Question;
+import ac_one.gqw1024.community.ac_one_community.model.QuestionExample;
 import ac_one.gqw1024.community.ac_one_community.model.User;
 import ac_one.gqw1024.community.ac_one_community.service.QuestionService;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,27 @@ public class QuestionServiceImpl implements QuestionService {
     private UserMapper userMapper;
 
     @Override
-    public int createQuestion(Question question) {
-        return questionMapper.create(question);
+    public int createOrUpdate(Question question) {
+        
+        if (question.getId()!=null){//如果id不为空，则此次操作的目的是修改
+            //通过用户id与问题id，确认该用户是否与该问题对应，如果为true，则执行修改操作
+            QuestionExample questionexample = new QuestionExample();
+            questionexample.createCriteria()
+                    .andCreatorEqualTo(question.getCreator())
+                    .andIdEqualTo(question.getId());
+            List<Question> questions = questionMapper.selectByExample(questionexample);
+            if(questions.size() == 1 && questions.get(0) != null){//如果通过作者ID与问题ID确定了唯一的问题
+                question.setGmtCreate(null);//由于仅需要修改【修改日期】，所以将创建日期设为空
+                QuestionExample updateexample = new QuestionExample();
+                updateexample.createCriteria()
+                        .andCreatorEqualTo(question.getCreator())
+                        .andIdEqualTo(question.getId());//通过作者ID以及问题的ID索引到具体要修改的问题
+                return questionMapper.updateByExampleSelective(question, updateexample);//更新该问题
+            }
+        }else{//否则执行创建操作
+               return questionMapper.insertSelective(question);
+        }
+        return 0;
     }
 
     /**
@@ -41,16 +62,16 @@ public class QuestionServiceImpl implements QuestionService {
     public PaginationDto LimitQuestionDtolist(int page, int pageSize) {
         PaginationDto paginationDto = new PaginationDto();//页面信息类
 
-        //计算总页数
-        Integer totalCount = questionMapper.listCount();//获取数据总数
+        //计算总页数   (目前位置信息量还不算太大，所以先使用int)
+        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());//获取数据总数
         paginationDto.setPaginationDto(totalCount,page,pageSize);//设置总页数  //设置当前页码 //设置每页显示数
 
         Integer pageOffect = (paginationDto.getPage()-1)*pageSize;//计算页码偏移量【即当前页面中最后一条数据在数据库中位置】
-        List<Question> questions = questionMapper.pageList(pageOffect,pageSize);//获取分页后的问题列表
+                                                                               //空的条件代表查询所有/    逆向生成的分页插件，指定页码偏移量以及数据数量后直接使用即可
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(),new RowBounds(pageOffect,pageSize));//获取分页后的问题列表
         List<QuestionDto> questionDtoList = new ArrayList<>();//需要返回到前端的数据列表
-
         for (Question q : questions) {
-            User user = userMapper.findByID(q.getCreator());//之后通过作者id获取问题作者信息
+            User user = userMapper.selectByPrimaryKey(q.getCreator());//之后通过作者id获取问题作者信息
             QuestionDto questionDto = new QuestionDto();//question传输工具类
             BeanUtils.copyProperties(q,questionDto);//这个方法的作用是快速的将【参数1】对象与【参数2】对象上的相同名字的属性值拷贝到【参数2】对象上
             questionDto.setGmtNow(System.currentTimeMillis()-q.getGmtCreate());
@@ -58,7 +79,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionDtoList.add(questionDto);//将整合好的信息添加到列表中去
         }
 
-        paginationDto.setQuestionDtoList(questionDtoList);//存入问题列表
+          paginationDto.setQuestionDtoList(questionDtoList);//存入问题列表
         return paginationDto;
     }
 
@@ -74,15 +95,23 @@ public class QuestionServiceImpl implements QuestionService {
         PaginationDto paginationDto = new PaginationDto();//页面信息类
 
         //计算总页数
-        Integer totalCount = questionMapper.listCountByUserID(userid);//获取数据总数
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(userid);//查询该用户的问题总数
+        Integer totalCount = (int)questionMapper.countByExample(example);//获取数据总数
         paginationDto.setPaginationDto(totalCount,page,pageSize);//设置总页数  //设置当前页码 //设置每页显示数
 
         Integer pageOffect = (paginationDto.getPage()-1)*pageSize;//计算页码偏移量【即当前页面中最后一条数据在数据库中位置】
-        List<Question> questions = questionMapper.userpageList(userid,pageOffect,pageSize);//获取分页后用户本人的问题列表
+
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(userid);//查找该用户的所有问题并分页
+                                                                                            //逆向生成的分页插件，指定页码偏移量以及数据数量即可
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample,new RowBounds(pageOffect,pageSize));//获取分页后用户本人的问题列表
         List<QuestionDto> questionDtoList = new ArrayList<>();//需要返回到前端的数据列表
 
         for (Question q : questions) {
-            User user = userMapper.findByID(q.getCreator());//之后通过作者id获取问题作者信息
+            User user = userMapper.selectByPrimaryKey(q.getCreator());//之后通过作者id获取问题作者信息
             QuestionDto questionDto = new QuestionDto();//question传输工具类
             BeanUtils.copyProperties(q,questionDto);//这个方法的作用是快速的将【参数1】对象与【参数2】对象上的相同名字的属性值拷贝到【参数2】对象上
             questionDto.setGmtNow(System.currentTimeMillis()-q.getGmtCreate());
@@ -93,6 +122,15 @@ public class QuestionServiceImpl implements QuestionService {
         paginationDto.setQuestionDtoList(questionDtoList);//存入问题列表
         return paginationDto;
     }
+    /**
+     * 使用问题id来获取Question对象
+     * @param id
+     * @return
+     */
+    @Override
+    public Question getById(Integer id) {
+        return questionMapper.selectByPrimaryKey(id);//根据问题id查询问题信息
+    }
 
     /**
      * 使用问题id来获取整合了用户与问题信息的QuestionDto对象
@@ -101,11 +139,11 @@ public class QuestionServiceImpl implements QuestionService {
      */
     @Override
     public QuestionDto getQuestionDtoById(Integer id) {
-        Question question = questionMapper.findQuestion(id);//根据问题id查询问题信息
+        Question question = questionMapper.selectByPrimaryKey(id);//根据问题id查询问题信息
         QuestionDto questionDto = null;
         if (question != null) {//防止持有该id的问题不存在，报空指针异常
             questionDto = new QuestionDto();
-            User user = userMapper.findByID(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             //整合用户与用户发布的问题的信息
             questionDto.setQuestionCreater(user);
             BeanUtils.copyProperties(question , questionDto);//这个方法的作用是快速的将【参数1】对象与【参数2】对象上的相同名字的属性值拷贝到【参数2】对象上
@@ -119,7 +157,7 @@ public class QuestionServiceImpl implements QuestionService {
      */
     @Override
     public int QuestionListSize() {
-        return questionMapper.listCount();
+        return (int)questionMapper.countByExample(new QuestionExample());
     }
 
 

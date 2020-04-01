@@ -1,16 +1,13 @@
 package ac_one.gqw1024.community.ac_one_community.controller;
 
-import ac_one.gqw1024.community.ac_one_community.dao.QuestionMapper;
-import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.model.Question;
 import ac_one.gqw1024.community.ac_one_community.model.User;
-import ac_one.gqw1024.community.ac_one_community.provider.CookieUserProvider;
+import ac_one.gqw1024.community.ac_one_community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -18,10 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    QuestionMapper questionMapper;
+    QuestionService questionService;
 
     @GetMapping("/publish")
     public ModelAndView publish(ModelAndView modelAndView, HttpServletRequest request){
@@ -50,9 +44,10 @@ public class PublishController {
             @RequestParam("title")String title,
             @RequestParam("description")String description,
             @RequestParam("tag")String questionTag,
+            @RequestParam(value = "questionID",required = false)Integer questionID,
             ModelAndView modelAndView){
         if(creator == null || title.isEmpty() || description.isEmpty() || questionTag.isEmpty()){
-            modelAndView.addObject("error","错误提交！可能存在空值");
+            modelAndView.addObject("derror","错误提交！可能存在空值");
 
             modelAndView.addObject("title",title);//保证前端就算出错，已填写的数据也不消失
             modelAndView.addObject("description",description);
@@ -61,17 +56,33 @@ public class PublishController {
             modelAndView.setViewName("publish");
             return modelAndView;
         }
+        //设置问题的信息
         Question question = new Question();
-        question.setCreator(creator);
-        question.setTitle(title);
-        question.setDescription(description);
-        question.setQuestionTag(questionTag);
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        questionMapper.create(question);
+        question.setCreator(creator);//问题的作者
+        question.setTitle(title);//标题
+        question.setDescription(description);//内容
+        question.setQuestionTag(questionTag);//标签
+        question.setGmtCreate(System.currentTimeMillis());//创建时间
+        question.setGmtModified(question.getGmtCreate());//修改时间
+        question.setId(questionID);//问题的id，以这个值的有无来判断是否执行修改操作
         System.out.println("creator="+creator+" title="+title+" description="+description+" tag"+questionTag);
-        modelAndView.addObject("success",true);
+        if (questionService.createOrUpdate(question)==1) {//如果操作执行成功
+            modelAndView.addObject("success", true);//返回提示
+        }
         modelAndView.setViewName("redirect:/publish");
         return modelAndView;
     }
+
+    @RequestMapping("/publish/{id}")
+    public ModelAndView editQuestion (@PathVariable("id")Integer id,ModelAndView modelAndView){
+        Question question = questionService.getById(id);
+        modelAndView.addObject("title",question.getTitle());//保证前端就算出错，已填写的数据也不消失
+        modelAndView.addObject("description",question.getDescription());
+        modelAndView.addObject("questionTag",question.getQuestionTag());
+        modelAndView.addObject("creatorID",question.getCreator());
+        modelAndView.addObject("questionID",question.getId());//【编辑问题】与【发布问题】的主要区分点，就是是否存在questionID这个值
+        modelAndView.setViewName("publish");
+        return modelAndView;
+    }
+
 }

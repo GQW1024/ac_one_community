@@ -27,6 +27,7 @@
             <hr>
             <form action="/dopublish" method="post">
                 <input type="hidden" id="creator" name="creator" th:value="${session.user.id}">
+                <input type="hidden" id="questionID" name="questionID" th:if="${questionID ne null}" th:value="${questionID}">
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）</label>
                     <input type="text" class="form-control" th:value="${title}" id="title" name="title" placeholder="问题标题...">
@@ -45,8 +46,12 @@
                             <div id="alert_box">
 
                             </div>
+                            <!-- 如果用户非法跳转 -->
+                            <div th:if="${(creatorID ne null && creatorID ne session.user.id)}" class="alert alert-danger col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                这不是您的问题，您不可以修改!!!
+                            </div>
                         </div>
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                        <div th:if="${creatorID eq null || (creatorID ne null && creatorID eq session.user.id)}" class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
                                 <button type="submit" id="submit" class="btn btn-success btn-lg btn_publish">
                                     发布
                                 </button>
@@ -72,7 +77,7 @@
             <span class="main" th:if="${error} ne null">
                     <div class="alert alert-warning alert-dismissible" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <strong th:text="@{'警告!'+${error}}"></strong>信息提交错误可能存在空值！
+                        <strong th:text="'警告!'+${error}"></strong>信息提交错误可能存在空值！
                     </div>
             </span>
             <span class="main" th:if="${#bools.isTrue(#httpServletRequest.getParameter('success'))}">

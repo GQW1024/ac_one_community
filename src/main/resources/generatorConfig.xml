@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!--MyBatis逆向生成工具官方的插件，只需要加这一行，就可以使得生成的sql支持分页-->
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
+        <commentGenerator>
+            <!--
+                         suppressAllComments属性值：
+                             true:自动生成实体类、SQL映射文件时没有注释
+                             false:自动生成实体类、SQL映射文件，并附有注释
+                       -->
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+        <!-- 数据库连接信息 -->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/ac_one_community?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=CONVERT_TO_NULL&amp;useSSL=false&amp;serverTimezone=GMT%2B8"
+                        userId="root"  password="123456">
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+        <!--      forceBigDecimals属性值：
+                  true:把数据表中的DECIMAL和NUMERIC类型，解析为JAVA代码中的java.math.BigDecimal类型
+                  false(默认):把数据表中的DECIMAL和NUMERIC类型，解析为解析为JAVA代码中的Integer类型
+              -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <!--
+                  targetProject属性值:实体类的生成位置
+                  targetPackage属性值：实体类所在包的路径
+              -->
+        <javaModelGenerator targetPackage="ac_one.gqw1024.community.ac_one_community.model"
+                            targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true"/>
+            <!-- trimStrings属性值：
+                         true：对数据库的查询结果进行trim操作
+                         false(默认)：不进行trim操作
+                       -->
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+        <!-- 生成SQL map的XML文件生成器，
+       注意，在Mybatis3之后，我们可以使用mapper.xml文件+Mapper接口（或者不用mapper接口），
+           或者只使用Mapper接口+Annotation，所以，如果 javaClientGenerator配置中配置了需要生成XML的话，这个元素就必须配置
+       targetPackage/targetProject:同javaModelGenerator
+    -->
+        <sqlMapGenerator targetPackage="mapper" targetProject=".\src\main\resources">
+            <!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false -->
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!--
+                  targetProject属性值:SQL映射文件的生成位置
+                  targetPackage属性值：SQL映射文件所在包的路径
+              -->
+<!--        <sqlMapGenerator targetPackage="cn.mapper"-->
+<!--                         targetProject=".\src\main\java">-->
+<!--        </sqlMapGenerator>-->
+        <!-- 生成动态代理的接口（Mapper接口）  -->
+        <!--ANNOTATEDMAPPER: 生成java类文件,基于注解的Mapper接口，不会有对应的XML映射文件
+           MIXEDMAPPER:XML和注解的混合形式
+           XMLMAPPER:所有的方法都在XML中，接口调用依赖XML文件 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="ac_one.gqw1024.community.ac_one_community.dao" targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+        <!-- 指定数据库表           实际生成的实体类名称 -->
+        <table tableName="user" domainObjectName="User">
+            <!--如果设置为true，则生成的实体类中的getter和setter方法的名字会变为全部大写；设置为false则会采用驼峰标识，这也是默认的设置-->
+            <property name="useActualColumnNames" value="false"/>
+        </table>
+        <table tableName="question" domainObjectName="Question">
+            <!--如果设置为true，则生成的实体类中的getter和setter方法的名字会变为全部大写；设置为false则会采用驼峰标识，这也是默认的设置-->
+            <property name="useActualColumnNames" value="false"/>
+        </table>
+    </context>
+</generatorConfiguration>

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface QuestionService {
 
-    int createQuestion(Question question);
+    int createOrUpdate(Question question);
     /**
      * 获取当前页的问题列表，并存入【页面信息传输类】，然后返回
      * @param pageOffect
@@ -40,4 +40,11 @@ public interface QuestionService {
      * @return
      */
     QuestionDto getQuestionDtoById(Integer id);
+
+    /**
+     * 通过ID查找Question
+     * @param id
+     * @return
+     */
+    Question getById(Integer id);
 }

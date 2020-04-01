@@ -1,28 +1,35 @@
 package ac_one.gqw1024.community.ac_one_community.dao;
 
 import ac_one.gqw1024.community.ac_one_community.model.User;
-import org.apache.ibatis.annotations.*;
+import ac_one.gqw1024.community.ac_one_community.model.UserExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Repository;
 
-@Mapper //为Mapper生成实现类
-@Repository  //将Mapper注入到SpringIOC容器中
+@Repository
 public interface UserMapper {
+    long countByExample(UserExample example);
 
-    @Insert("insert into user(account_id,name,token,gmt_create,gmt_modified,avatar_url) values(#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
-    int insertUser(User user);//插入用户信息
+    int deleteByExample(UserExample example);
 
-    @Delete("delete from user where id = #{id}")
-    int deltById(@Param("id") int id);//以用户id为key删除用户信息
+    int deleteByPrimaryKey(Integer id);
 
-    @Select("select * from user where account_id = #{accountId}")
-    User findByAccountID(@Param("accountId")String account_id);//以用户的account_id为条件查询用户信息
+    int insert(User record);
 
-    @Select("select * from user where id = #{id}")
-    User findByID(@Param("id")int id);//以用户的id为条件查询用户的信息
+    int insertSelective(User record);
 
-    @Select("select * from user where token = #{token}")
-    User findByToken(@Param("token")String token);//以用户token为key查询用户信息
+    List<User> selectByExampleWithRowbounds(UserExample example, RowBounds rowBounds);
 
-    //@Update("update user set avatar_url = #{avatar_url} where account_id = #{account_id}")
-    //int updateUserFace(@Param("account_id") String account_id,@Param("avatar_url") String avatar_url);
+    List<User> selectByExample(UserExample example);
+
+    User selectByPrimaryKey(Integer id);
+
+    int updateByExampleSelective(@Param("record") User record, @Param("example") UserExample example);
+
+    int updateByExample(@Param("record") User record, @Param("example") UserExample example);
+
+    int updateByPrimaryKeySelective(User record);
+
+    int updateByPrimaryKey(User record);
 }

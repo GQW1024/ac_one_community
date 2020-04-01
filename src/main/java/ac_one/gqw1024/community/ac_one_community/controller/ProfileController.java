@@ -3,17 +3,14 @@ package ac_one.gqw1024.community.ac_one_community.controller;
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
 import ac_one.gqw1024.community.ac_one_community.model.User;
-import ac_one.gqw1024.community.ac_one_community.provider.CookieUserProvider;
 import ac_one.gqw1024.community.ac_one_community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -23,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserMapper userMapper1;
 
     @Autowired
     private QuestionService questionService;
@@ -42,6 +39,7 @@ public class ProfileController {
             ModelAndView modelAndView){
 
         User user =(User) request.getSession().getAttribute("user");
+        //System.out.println(user.toString());
         if (user==null){
             modelAndView.setViewName("index");
             return modelAndView;

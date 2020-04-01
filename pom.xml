@@ -124,6 +124,19 @@
                     <locations>classpath:db/migration/</locations>
                 </configuration>
             </plugin>
+            <plugin>
+                <!--使用MyBaTis逆向生成插件，以maven的方式-->
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>8.0.19</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 
