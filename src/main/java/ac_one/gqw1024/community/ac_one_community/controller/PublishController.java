@@ -47,7 +47,7 @@ public class PublishController {
             @RequestParam(value = "questionID",required = false)Integer questionID,
             ModelAndView modelAndView){
         if(creator == null || title.isEmpty() || description.isEmpty() || questionTag.isEmpty()){
-            modelAndView.addObject("derror","错误提交！可能存在空值");
+            modelAndView.addObject("error","错误提交！可能存在空值");
 
             modelAndView.addObject("title",title);//保证前端就算出错，已填写的数据也不消失
             modelAndView.addObject("description",description);

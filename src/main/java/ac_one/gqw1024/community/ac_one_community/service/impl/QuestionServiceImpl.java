@@ -4,6 +4,8 @@ import ac_one.gqw1024.community.ac_one_community.dao.QuestionMapper;
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
 import ac_one.gqw1024.community.ac_one_community.dto.QuestionDto;
+import ac_one.gqw1024.community.ac_one_community.exception.CustomizeErrorCode;
+import ac_one.gqw1024.community.ac_one_community.exception.CustomizeException;
 import ac_one.gqw1024.community.ac_one_community.model.Question;
 import ac_one.gqw1024.community.ac_one_community.model.QuestionExample;
 import ac_one.gqw1024.community.ac_one_community.model.User;
@@ -129,7 +131,11 @@ public class QuestionServiceImpl implements QuestionService {
      */
     @Override
     public Question getById(Integer id) {
-        return questionMapper.selectByPrimaryKey(id);//根据问题id查询问题信息
+        Question question = questionMapper.selectByPrimaryKey(id);
+        if(question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
+        return question;//根据问题id查询问题信息
     }
 
     /**
@@ -147,6 +153,8 @@ public class QuestionServiceImpl implements QuestionService {
             //整合用户与用户发布的问题的信息
             questionDto.setQuestionCreater(user);
             BeanUtils.copyProperties(question , questionDto);//这个方法的作用是快速的将【参数1】对象与【参数2】对象上的相同名字的属性值拷贝到【参数2】对象上
+        }else{
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
         return questionDto;
     }

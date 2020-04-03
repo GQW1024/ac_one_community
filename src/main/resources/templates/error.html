@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>WD社区</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="/css/ac_one_community.css">
+
+    <!--Jquery.js-->
+    <script src="/js/jquery-3.2.1.min.js" type="application/javascript"></script>
+    <!-- Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+
+</head>
+<body>
+<div th:replace="~{navgition::nav}"></div><!--引入navgition.html中定义好的导航栏-->
+
+<div class="jumbotron">
+    <h1>出错啦 ! ! !</h1>
+    <p th:text="${message}">请求要处理不过来啦!要不稍等一下再试试?</p>
+    <p><a class="btn btn-primary btn-lg" href="/" role="button">回到主页</a></p>
+</div>
+</div>
+</body>
+</html>
