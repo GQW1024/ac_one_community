@@ -31,8 +31,8 @@ public class IndexController {
      */
     @GetMapping("/")
     public ModelAndView meeting(
-            @RequestParam(value = "page",defaultValue = "1")Integer page,
-            @RequestParam(value = "pageSize",defaultValue = "5")Integer pageSize,
+            @RequestParam(value = "page",defaultValue = "1")int page,
+            @RequestParam(value = "pageSize",defaultValue = "5")int pageSize,
             HttpServletRequest request,ModelAndView modelAndView){
 
         modelAndView.setViewName("index");

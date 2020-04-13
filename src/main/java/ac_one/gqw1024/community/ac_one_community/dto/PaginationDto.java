@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * 存放当前页面的信息
  * List<QuestionDto> questionDtoList;   问题与问题作者的信息列表
+ * List<CommentDto> commentDtoList;   扩展，用户与用户的回复列表
  *     Integer page;                    当前的页码
  *     Integer pageCount;               总页数
  *     List<Integer> pages;             当前页面中的页码
@@ -20,6 +21,7 @@ import java.util.List;
 @Data
 public class PaginationDto {
     List<QuestionDto> questionDtoList;
+    List<CommentDto> commentDtoList;
     Integer page;
     Integer totalPage;
     List<Integer> pages = new ArrayList<>();

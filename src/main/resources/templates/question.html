@@ -14,32 +14,113 @@
     <script src="/js/jquery-3.2.1.min.js" type="application/javascript"></script>
     <!-- Bootstrap 核心 JavaScript 文件 -->
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <!--实现异步发送回复的js-->
+    <script src="/js/comment.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:replace="~{navgition::nav}"></div><!--引入navgition.html中定义好的导航栏-->
 <div class="container-fluid main profile"><!-- container-fluid begin-->
     <div class="row">
+        <!--左边问题信息快-->
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2><span th:text="${questionDto.title}"></span></h2>
-            <span class="text_desc_question">
-                作者:<span th:text="${questionDto.questionCreater.name}"></span> |
-                发布时间:<span th:text="${#dates.format(questionDto.gmtCreate,'YYYY-MM-dd HH:mm')}"></span> |
-                <span th:text="${questionDto.viewCount}"></span>次浏览
-            </span>
-            <hr>
-            <hr>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDto.description}"></div>
-            <br/>
-            <hr>
-            <hr>
-            <a class="text-color-999" th:if="${session.user ne null && session.user.id eq questionDto.questionCreater.id}" th:href="@{'/publish/'+${questionDto.id}}">
-                <span class="glyphicon glyphicon-pencil"></span>
+            <!--正文-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h2 class="question-title"><span th:text="${questionDto.title}"></span></h2>
+                <span class="text_desc_question">
+                    作者:<span th:text="${questionDto.questionCreater.name}"></span> |
+                    发布时间:<span th:text="${#dates.format(questionDto.gmtCreate,'YYYY-MM-dd HH:mm')}"></span> |
+                    <span th:text="${questionDto.viewCount}"></span>次浏览
+                </span>
+                <hr>
+                <hr>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDto.description}"></div>
+                <br/>
+                <hr>
+                <hr>
+                <a class="text-color-999" th:if="${session.user ne null && session.user.id eq questionDto.questionCreater.id}" th:href="@{'/publish/'+${questionDto.id}}">
+                    <span class="glyphicon glyphicon-pencil"></span>
                     编辑
-            </a>
+                </a>
+            </div>
+            <br/>
+            <!--回复框-->
+            <div id="comment_section" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <hr>
+                <div class="media" th:if="${session.user ne null}">
+                    <div class="media-left">
+                        <a  href="#">
+                            <img class="media-object img-rounded main_list_item_imgSize" th:src="${session.user.avatarUrl}" alt="...">
+                        </a>
+                    </div>
+                    <div class="media-body comment-username">
+                        <h5 class="media-heading">
+                            <input type="hidden" id="commentator" th:value="${session.user.id}">
+                            <a href="#" th:text="${session.user.name}"></a>
+                        </h5>
+                    </div>
+                </div>
+                <!--如果是游客-->
+                <div class="media" th:if="${session.user eq null}">
+                    <div class="media-left">
+                        <a  href="#">
+                            <span class="glyphicon glyphicon-comment" aria-hidden="true"/>
+                        </a>
+                    </div>
+                    <div class="media-body comment-username">
+                        <h5 class="media-heading">
+                            <input type="hidden" id="ifTourist" value="true">
+                            <a href="#">游客</a>
+                        </h5>
+                    </div>
+                </div>
+
+                <input type="hidden" id="questionID" th:value="${questionDto.id}">
+                <textarea class="form-control comment-text" rows="3" id="questionCommentContent"></textarea>
+                <button type="button" class="btn btn-success float-right" onclick="postComment_Q()">回复</button>
+            </div>
+            <br/>
+
+            <!--回复列表-->
+            <!--回复的条数-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <hr>
+                <h4>
+                    共 <span id="comment_count" th:text="${comments.size()}"></span> 条回复
+                </h4>
+                <hr class="hr-margin-top-0">
+            </div>
+            <!--回复的内容-->
+            <span id="commentList" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments" th:each="comment:${comments}">
+                <div class="media"  th:if="${comment.commentCreator ne null}">
+                    <div class="media-left">
+                        <a  href="#">
+                            <img class="media-object img-rounded main_list_item_imgSize" th:src="${comment.commentCreator.avatarUrl}" alt="..."/>
+                        </a>
+                    </div>
+                    <div class="media-body comment-username">
+                        <h5 class="media-heading">
+                            <input type="hidden" th:value="${comment.commentCreator.id}">
+                            <a href="#" th:text="${comment.commentCreator.name}"></a>
+                            <div th:text="${comment.content}"></div>
+                            <!--一些社交操作-->
+                            <div class="comment-menu">
+                                <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                                <span class="glyphicon glyphicon-thumbs-down icon"></span>
+                                <span class="glyphicon glyphicon-comment icon"></span>
+                                <span class="float-right icon" th:text="${#dates.format(comment.gmtCreate,'YYYY-MM-dd')}"></span>
+                            </div>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+            </span>
         </div>
+        <!--右边作者相关信息-->
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 right-section" >
-                <h4>发布人</h4>
+                <h4><strong>发布人</strong></h4>
                 <div class="media">
                     <div class="media-left">
                         <a  href="#">
@@ -47,15 +128,15 @@
                         </a>
                     </div>
                     <div class="media-body">
-                        <h5 class="media-heading">
+                        <h5 class="media-heading user-name">
                             <a href="#" th:text="${questionDto.questionCreater.name}"></a>
                         </h5>
                     </div>
                 </div>
             </div>
-            <hr/>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
-                <h4>相关问题</h4>
+                <h4><strong>相关问题</strong></h4>
             </div>
         </div>
     </div>

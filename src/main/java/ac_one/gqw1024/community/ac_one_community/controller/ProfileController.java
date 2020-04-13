@@ -33,13 +33,12 @@ public class ProfileController {
     @RequestMapping("/profile/{action}")
     public ModelAndView profile(
             @PathVariable(value = "action",required = false)String action,
+            @RequestParam(value = "userId",required = false)Long userId,
             @RequestParam(value = "page",defaultValue = "1")Integer page,
             @RequestParam(value = "pageSize",defaultValue = "3")Integer pageSize,
             HttpServletRequest request,
             ModelAndView modelAndView){
-
         User user =(User) request.getSession().getAttribute("user");
-        //System.out.println(user.toString());
         if (user==null){
             modelAndView.setViewName("index");
             return modelAndView;
@@ -54,7 +53,6 @@ public class ProfileController {
             modelAndView.addObject("section","replies");//设置选中我的问题板块
             modelAndView.addObject("sectionName","最新回复");//设置选中的版块的名称
         }
-
         modelAndView.setViewName("profile");
         return modelAndView;
     }

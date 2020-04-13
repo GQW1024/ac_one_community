@@ -7,11 +7,16 @@ import ac_one.gqw1024.community.ac_one_community.model.UserExample;
 import ac_one.gqw1024.community.ac_one_community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * 这个事务实现类主要用来进行一些关于用户的事务
+ */
 @Service
+@Transactional//为这个service中的所有事务添加事务处理
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -19,6 +24,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * github用户的登录注册业务方法
+     * 如果该Github用户是第一次登录，则将该用户注册
+     * 如果该Github用户是老用户，已经存在了账户，则更新该账户的信息
      * @param githubUser
      * @return
      */
@@ -31,9 +38,9 @@ public class UserServiceImpl implements UserService {
         List<User> users = userMapper.selectByExample(example);
         //如果，数据库中存有该用户的信息,为了防止用户在github上修改了自身的信息，需要更新该用户的一部分信息
         if (users.size() == 1 && users.get(0)!= null) {
-            String token = UUID.randomUUID().toString();
             User updateUsermessage = new User();
-            updateUsermessage.setId(users.get(0).getId());
+            String token = UUID.randomUUID().toString();//生成一个新的token
+            updateUsermessage.setId(users.get(0).getId());//设置更新用户事务的where条件
             updateUsermessage.setToken(token);//更新用户的token
             updateUsermessage.setBio(githubUser.getBio());//更新用户的简介
             updateUsermessage.setName(githubUser.getName());//更新用户的名称
@@ -59,7 +66,7 @@ public class UserServiceImpl implements UserService {
             newuser.setAvatarUrl(githubUser.getAvatarUrl());//用户的头像
 
             int iSsuccess = userMapper.insertSelective(newuser); //插入当前用户的数据
-            if(iSsuccess == 1){//如果注册成功
+            if(iSsuccess == 1){//如果注册事务成功
                 return token;//返回token
             }
         }

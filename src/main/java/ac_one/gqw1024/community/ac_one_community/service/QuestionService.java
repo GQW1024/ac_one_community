@@ -1,13 +1,8 @@
 package ac_one.gqw1024.community.ac_one_community.service;
 
-import ac_one.gqw1024.community.ac_one_community.dao.QuestionMapper;
 import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
 import ac_one.gqw1024.community.ac_one_community.dto.QuestionDto;
 import ac_one.gqw1024.community.ac_one_community.model.Question;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Question表的service接口
@@ -32,19 +27,26 @@ public interface QuestionService {
      * @param pageSize
      * @return
      */
-    PaginationDto UserQuestionlist(Integer id, Integer page, Integer pageSize);
+    PaginationDto UserQuestionlist(Long id, Integer page, Integer pageSize);
 
     /**
      * 使用问题id来获取整合了用户与问题信息的QuestionDto对象
      * @param id
      * @return
      */
-    QuestionDto getQuestionDtoById(Integer id);
+    QuestionDto getQuestionDtoById(Long id);
 
     /**
      * 通过ID查找Question
      * @param id
      * @return
      */
-    Question getById(Integer id);
+    Question getById(Long id);
+
+    /**
+     * 增加阅读数量
+     * @param id
+     * @return
+     */
+    Integer incView(Long id);
 }

@@ -6,9 +6,15 @@ package ac_one.gqw1024.community.ac_one_community.exception;
  */
 public class CustomizeException extends RuntimeException{
     private String message;
+    private Integer code;
 
-    public CustomizeException(ICustomizeErrorCode errorCode) {
+    public CustomizeException(CustomizeErrorCode errorCode) {
+        this.code = errorCode.getCode();
         this.message = errorCode.getMessage();//获取枚举类CustomizeErrorCode中对应的错误信息。
+    }
+
+    public Integer getCode() {
+        return code;
     }
 
     @Override

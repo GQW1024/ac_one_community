@@ -5,11 +5,13 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 @SpringBootApplication
+@EnableTransactionManagement //默认服务启动时 开启事务管理器
 @MapperScan("ac_one.gqw1024.community.ac_one_community.dao")//扫描生成实现类，但是这个注解并不会不会注入SpringIOC
 public class AcOneCommunityApplication extends WebMvcConfigurationSupport {
 

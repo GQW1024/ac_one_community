@@ -4,6 +4,9 @@ body{
 a{
     text-decoration: none;
 }
+ul{
+    display: none;
+}
 .main{
     margin-top: 30px;
     margin-left: 60px;
@@ -38,4 +41,41 @@ a{
 }
 .jumbotron{
     margin: 60px;
+}
+.question-title{
+    margin-top: 25px;
+}
+.user-name{
+    padding-top: 15px;
+}
+.comment-username{
+    padding-top: 15px;
+}
+.comment-text{
+    margin: 10px 0px;
+}
+.float-right{
+    float: right;
+}
+.hr-margin-top-0{
+    margin-top: 0px;
+}
+.comment-menu{
+    font-size: 15px;
+    margin-top: 10px;
+}
+.comment-menu .icon{
+    margin: 0px 10px;
+    color: #999999;
+    cursor: pointer;
+}
+.comment-menu .icon:hover{
+    margin: 0px 10px;
+    color: #499ef3;
+    cursor: pointer;
+}
+.comments{
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px #eeeeee solid;
 }

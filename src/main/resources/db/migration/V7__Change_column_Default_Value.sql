@@ -1,0 +1,1 @@
+alter table question alter column question_type set default 'default_type';

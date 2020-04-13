@@ -40,11 +40,11 @@ public class PublishController {
      */
     @PostMapping("/dopublish")
     public ModelAndView dopublish(
-            @RequestParam("creator")Integer creator,
+            @RequestParam("creator")Long creator,
             @RequestParam("title")String title,
             @RequestParam("description")String description,
             @RequestParam("tag")String questionTag,
-            @RequestParam(value = "questionID",required = false)Integer questionID,
+            @RequestParam(value = "questionID",required = false)Long questionID,
             ModelAndView modelAndView){
         if(creator == null || title.isEmpty() || description.isEmpty() || questionTag.isEmpty()){
             modelAndView.addObject("error","错误提交！可能存在空值");
@@ -74,7 +74,7 @@ public class PublishController {
     }
 
     @RequestMapping("/publish/{id}")
-    public ModelAndView editQuestion (@PathVariable("id")Integer id,ModelAndView modelAndView){
+    public ModelAndView editQuestion (@PathVariable("id")Long id,ModelAndView modelAndView){
         Question question = questionService.getById(id);
         modelAndView.addObject("title",question.getTitle());//保证前端就算出错，已填写的数据也不消失
         modelAndView.addObject("description",question.getDescription());
