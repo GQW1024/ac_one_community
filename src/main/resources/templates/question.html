@@ -89,9 +89,9 @@
                 </h4>
                 <hr class="hr-margin-top-0">
             </div>
-            <!--回复的内容-->
-            <span id="commentList" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments" th:each="comment:${comments}">
+            <!--回复列表的内容-->
+            <span id="commentList" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><!-- 注：一级回复列表没有特定样式 -->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment" th:each="comment:${comments}">
                 <div class="media"  th:if="${comment.commentCreator ne null}">
                     <div class="media-left">
                         <a  href="#">
@@ -102,15 +102,48 @@
                         <h5 class="media-heading">
                             <input type="hidden" th:value="${comment.commentCreator.id}">
                             <a href="#" th:text="${comment.commentCreator.name}"></a>
-                            <div th:text="${comment.content}"></div>
-                            <!--一些社交操作-->
-                            <div class="comment-menu">
-                                <span class="glyphicon glyphicon-thumbs-up icon"></span>
-                                <span class="glyphicon glyphicon-thumbs-down icon"></span>
-                                <span class="glyphicon glyphicon-comment icon"></span>
-                                <span class="float-right icon" th:text="${#dates.format(comment.gmtCreate,'YYYY-MM-dd')}"></span>
-                            </div>
                         </h5>
+                        <div th:text="${comment.content}"></div>
+                        <!--一些社交操作-->
+                        <div class="comment-menu">
+                            <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                            <span class="glyphicon glyphicon-thumbs-down icon"></span>
+                            <!--二级回复按钮-->
+                            <span class="glyphicon glyphicon-comment icon" th:data-comment-id="${comment.id}" onclick="collapseComments(this)"></span>
+                            <span class="float-right icon" th:text="${#dates.format(comment.gmtCreate,'YYYY-MM-dd')}"></span>
+                        </div>
+                        <!-- 二级评论列表 -->
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse second-comment-list" th:id="${'comment-id-'+comment.id}">
+                            <!--循环显示二级回复列表-->
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment" th:each="comment:${comments}">
+                                <div class="media"  th:if="${comment.commentCreator ne null}">
+                                    <div class="media-left">
+                                        <a  href="#">
+                                            <img class="media-object img-rounded main_list_item_imgSize" th:src="${comment.commentCreator.avatarUrl}" alt="..."/>
+                                        </a>
+                                    </div>
+                                    <div class="media-body comment-username">
+                                        <h5 class="media-heading">
+                                            <input type="hidden" th:value="${comment.commentCreator.id}">
+                                            <a href="#" th:text="${comment.commentCreator.name}"></a>
+                                        </h5>
+                                        <div th:text="${comment.content}"></div>
+                                        <!--一些社交操作-->
+                                        <div class="comment-menu">
+                                            <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                                            <span class="glyphicon glyphicon-thumbs-down icon"></span>
+                                            <!--二级回复按钮-->
+                                            <span class="glyphicon glyphicon-comment icon" th:data-comment-id="${comment.id}" onclick="collapseComments(this)"></span>
+                                            <span class="float-right icon" th:text="${#dates.format(comment.gmtCreate,'YYYY-MM-dd')}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <input type="text" class="form-control" placeholder="评论一下···">
+                                <button type="button" class="btn btn-success pull-right">回复</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

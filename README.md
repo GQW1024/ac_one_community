@@ -17,21 +17,9 @@ IntelliJ IDEA <br/>
 [Lombox](https:www.projectlombox.org)
 [Postman](https://chrome.google.com/webstore/detail/coohjcphdfgbiolnekdpbcijmhambjff)
 ## 脚本
-```sql
-create table user
-(
-    id           int auto_increment
-        primary key,
-    account_id   varchar(100) null,
-    name         varchar(50)  null,
-    token        char(36)     null,
-    gmt_create   bigint       null comment '数据创建时间',
-    gmt_modified bigint       null comment '数据修改时间'
-)
-    comment '用户信息表';
-```
+
 ```bash
-mvn flyway:migrate
+SQL脚本：执行 mvn flyway:migrate 命令
 mvn mybatis-generator:generate   MyBatis Generator生成命令，不会覆盖原有同名文件
 ps:在使用覆盖生成命令之前，一定要记得把所有的Mapper删干净，防止出现：...with such name already exists  错误导致服务器启动失败
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate  MyBatis Generator生成命令，覆盖原有同名文件，

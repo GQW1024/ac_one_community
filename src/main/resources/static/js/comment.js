@@ -1,3 +1,6 @@
+/**
+ * 用户提交问题后异步刷新问题
+ */
 function postComment_Q() {
     var questionId = $("#questionID").val();//具体回复对象的id，这里的是被回复的问题的id
     var questionContent = $("#questionCommentContent").val();//回复的内容
@@ -90,7 +93,9 @@ function postComment_Q() {
     }
 }
 
-//格式化时间
+/**
+ * 将java的long型格式化为时间
+ */
 function formatDate(longDate) {
     var date = new Date(longDate);
     var yyyy = date.getFullYear();
@@ -103,4 +108,28 @@ function formatDate(longDate) {
         dd = "0" + dd;
     }
     return yyyy + "-" + mm + "-" + dd;
+}
+
+/**
+ * 点击二级回复按钮，选择是否加载二级折叠评论
+ */
+function collapseComments(e) {
+    var parentId = e.getAttribute("data-comment-id");//被点击的该回复的ID
+    var comments = $("#comment-id-"+parentId);//对应该回复的二级回复列表ID
+    var isopen = e.getAttribute("data-collapse");//二级回复列表是否打开
+
+    //默认，如果没有特数指定条件，且变量不是boolean类型，那么值为空就是false,值不为空就是true
+    if(isopen){//如果有值，则代表示当前二级回复列表已经打开，那么就关闭二级评论
+        //调用Jquery中的基本方法时，千万记得加上" $() "，否则默认调用JS中的方法，这样子会报 xxx is not a function 异常
+        //$(e).css("color","#999999");
+        e.classList.remove("active");
+        comments.removeClass("in");
+        e.removeAttribute("data-collapse");
+    }else{//否则打开二级评论
+        //$(e).css("color","#499ef3");
+        e.classList.add("active")
+        comments.addClass("in");
+        e.setAttribute("data-collapse","in");//添加打开二级评论的变量标识
+    }
+    console.log(parentId);
 }

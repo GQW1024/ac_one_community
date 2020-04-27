@@ -4,7 +4,7 @@ body{
 a{
     text-decoration: none;
 }
-ul{
+li{
     display: none;
 }
 .main{
@@ -74,8 +74,21 @@ ul{
     color: #499ef3;
     cursor: pointer;
 }
-.comments{
+.comment-menu .active{
+    color: #499ef3;
+}
+.comment{
     margin-bottom: 15px;
     padding-bottom: 5px;
     border-bottom: 1px #eeeeee solid;
+}
+.second-comment-list{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px #eeeeee solid;
+    padding: 15px;
+}
+.second-comment-list .btn{
+    margin: 10px 0px;
 }
