@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 @Data
-public class ResultDto {
+public class ResultDto<T> {
 
     private Integer code;
     private String message;
+    private T data;
 
     public static ResultDto errorOf(Integer code,String message){
         ResultDto resultDto = new ResultDto();
@@ -48,6 +49,17 @@ public class ResultDto {
         ResultDto resultDto = new ResultDto();
         resultDto.setCode(200);
         resultDto.setMessage("请求成功");
+        return resultDto;
+    }
+    /**
+     * 成功之后返回
+     * @return
+     */
+    public static <T> ResultDto successOf(T data) {
+        ResultDto resultDto = new ResultDto();
+        resultDto.setCode(200);
+        resultDto.setMessage("请求成功");
+        resultDto.setData(data);
         return resultDto;
     }
 }

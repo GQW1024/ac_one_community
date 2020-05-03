@@ -4,6 +4,7 @@ import ac_one.gqw1024.community.ac_one_community.dto.CommentCreateDto;
 import ac_one.gqw1024.community.ac_one_community.dto.CommentDto;
 import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
 import ac_one.gqw1024.community.ac_one_community.dto.QuestionDto;
+import ac_one.gqw1024.community.ac_one_community.enums.CommentTypeEnum;
 import ac_one.gqw1024.community.ac_one_community.service.CommentService;
 import ac_one.gqw1024.community.ac_one_community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class QuestionController {
             modelAndView.addObject("questionDto",questionDto);
 
             //获取该问题的回复列表
-            List<CommentDto> commentDtoList = commentService.listByQuestionId(id,page,pageSize);
+            List<CommentDto> commentDtoList = commentService.listByQuestionIdAndType(id,page,pageSize, CommentTypeEnum.QUESTION);
             modelAndView.addObject("comments",commentDtoList);
 
             modelAndView.setViewName("question");

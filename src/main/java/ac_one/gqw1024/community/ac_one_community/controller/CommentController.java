@@ -3,6 +3,7 @@ package ac_one.gqw1024.community.ac_one_community.controller;
 import ac_one.gqw1024.community.ac_one_community.dto.CommentCreateDto;
 import ac_one.gqw1024.community.ac_one_community.dto.CommentDto;
 import ac_one.gqw1024.community.ac_one_community.dto.ResultDto;
+import ac_one.gqw1024.community.ac_one_community.enums.CommentTypeEnum;
 import ac_one.gqw1024.community.ac_one_community.exception.CustomizeErrorCode;
 import ac_one.gqw1024.community.ac_one_community.model.Comment;
 import ac_one.gqw1024.community.ac_one_community.model.User;
@@ -34,6 +35,7 @@ public class CommentController {
          if(user == null){
              return ResultDto.errorOf(CustomizeErrorCode.NO_LOGIN);
          }
+
          Comment comment = new Comment();
          comment.setParentId(commentCreateDto.getParentId());
          comment.setCommentator(user.getId());
@@ -46,15 +48,33 @@ public class CommentController {
          return ResultDto.successOf();
     }
 
-    //请求获取某个问题的ID列表
+    //请求获取某个父类的回复列表
     @ResponseBody
-    @GetMapping("/commentListByQuestionId")
-    public List<CommentDto> commentListByQuestionId(@RequestParam("questionId") Long questionId,
-                                          @RequestParam(value = "page",defaultValue = "1")int page,
-                                          @RequestParam(value = "pageSize",defaultValue = "5")int pageSize,
-                                          HttpServletRequest request){
+    @GetMapping("/commentListById")
+    public List<CommentDto> commentListById(@RequestParam("parentId") Long parentId,
+                                                    @RequestParam("type") Integer type,
+                                                  @RequestParam(value = "page",defaultValue = "1")int page,
+                                                  @RequestParam(value = "pageSize",defaultValue = "5")int pageSize,
+                                                  HttpServletRequest request){
+        List<CommentDto> commentDtoList = null;
          //在这里不判断用户是否为空，是因为这个方法是【在用户提交回复成功时】用来异步刷新回复列表的，所以在调用这个GetMapping时，用户一定不是空的。
-        List<CommentDto> commentDtoList = commentService.listByQuestionId(questionId,page,pageSize);
+        if(CommentTypeEnum.QUESTION.getType() == type){
+            commentDtoList = commentService.listByQuestionIdAndType(parentId, page, pageSize, CommentTypeEnum.QUESTION);
+        }else {
+            commentDtoList = commentService.listByQuestionIdAndType(parentId, page, pageSize, CommentTypeEnum.COMMENT);
+        }
+
          return commentDtoList;
     }
+
+//    //请求某个回复的二级回复列表
+//    @ResponseBody
+//    @GetMapping(value = "/comment/{parentId}")
+//    public ResultDto<List<CommentDto>> SecondCommentList(@PathVariable Long parentId,//父类回复的ID
+//                                       @RequestParam(value = "page",defaultValue = "1")int page,
+//                                       @RequestParam(value = "pageSize",defaultValue = "5")int pageSize
+//                                        ){
+//        List<CommentDto> SecondCommentDtoList = commentService.listByQuestionIdAndType(parentId, page, pageSize, CommentTypeEnum.COMMENT);
+//         return ResultDto.successOf(SecondCommentDtoList);
+//    }
 }

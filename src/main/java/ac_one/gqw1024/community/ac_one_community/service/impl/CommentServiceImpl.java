@@ -5,15 +5,12 @@ import ac_one.gqw1024.community.ac_one_community.dao.QuestionExtMapper;
 import ac_one.gqw1024.community.ac_one_community.dao.QuestionMapper;
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.dto.CommentDto;
-import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
-import ac_one.gqw1024.community.ac_one_community.dto.QuestionDto;
 import ac_one.gqw1024.community.ac_one_community.enums.CommentTypeEnum;
 import ac_one.gqw1024.community.ac_one_community.exception.CustomizeErrorCode;
 import ac_one.gqw1024.community.ac_one_community.exception.CustomizeException;
 import ac_one.gqw1024.community.ac_one_community.model.*;
 import ac_one.gqw1024.community.ac_one_community.service.CommentService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 【回复】业务接口实现类
@@ -107,10 +103,11 @@ public class CommentServiceImpl implements CommentService {
      * 分页回复列表
      * 此方法基本照搬问题列表的分页方法
      * @param id
+     * @param type
      * @return
      */
     @Override
-    public List<CommentDto> listByQuestionId(Long id,int page,int pageSize) {
+    public List<CommentDto> listByQuestionIdAndType(Long id, int page, int pageSize, CommentTypeEnum type) {
 //        PaginationDto paginationDto = new PaginationDto();//页面信息类
 //
 //        //计算总页数   (目前位置信息量还不算太大，所以先使用int)
@@ -136,7 +133,8 @@ public class CommentServiceImpl implements CommentService {
         CommentExample commentExample = new CommentExample();
         commentExample.createCriteria()
                 .andParentIdEqualTo(id)
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+                .andTypeEqualTo(type.getType());
+                //.andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
         commentExample.setOrderByClause("gmt_create desc");//按时间降序
         List<Comment> comments = commentMapper.selectByExample(commentExample);
         if (comments.size() == 0){

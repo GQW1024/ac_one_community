@@ -1,7 +1,7 @@
 package ac_one.gqw1024.community.ac_one_community.service;
 
 import ac_one.gqw1024.community.ac_one_community.dto.CommentDto;
-import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
+import ac_one.gqw1024.community.ac_one_community.enums.CommentTypeEnum;
 import ac_one.gqw1024.community.ac_one_community.model.Comment;
 
 import java.util.List;
@@ -21,5 +21,5 @@ public interface CommentService {
      */
     int insert(Comment comment, Long questionId);
 
-    List<CommentDto> listByQuestionId(Long id, int page, int pageSize);
+    List<CommentDto> listByQuestionIdAndType(Long id, int page, int pageSize, CommentTypeEnum type);
 }
