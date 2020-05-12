@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ac_one.gqw1024.community.ac_one_community.dao.CommentExtMapper">
+
+  <!--回复的被回复数递增-->
+    <update id="incCommentCount" parameterType="ac_one.gqw1024.community.ac_one_community.model.Comment">
+      update comment
+      set
+        comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
+      where id = #{id,jdbcType=INTEGER}
+    </update>
+
+</mapper>

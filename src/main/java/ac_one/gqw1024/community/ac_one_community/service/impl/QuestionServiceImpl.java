@@ -77,17 +77,11 @@ public class QuestionServiceImpl implements QuestionService {
         paginationDto.setPaginationDto(totalCount,page,pageSize);//设置总页数  //设置当前页码 //设置每页显示数
 
         Integer pageOffect = (paginationDto.getPage()-1)*pageSize;//计算页码偏移量【即当前页面中最后一条数据在数据库中位置】
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
                                                                                //空的条件代表查询所有/    逆向生成的分页插件，指定页码偏移量以及数据数量后直接使用即可
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(),new RowBounds(pageOffect,pageSize));//获取分页后的问题列表
-//        List<QuestionDto> questionDtoList = new ArrayList<>();//需要返回到前端的数据列表
-//        for (Question q : questions) {
-//            User user = userMapper.selectByPrimaryKey(q.getCreator());//之后通过作者id获取问题作者信息
-//            QuestionDto questionDto = new QuestionDto();//question传输工具类
-//            BeanUtils.copyProperties(q,questionDto);//这个方法的作用是快速的将【参数1】对象与【参数2】对象上的相同名字的属性值拷贝到【参数2】对象上
-//            questionDto.setGmtNow(System.currentTimeMillis()-q.getGmtCreate());
-//            questionDto.setQuestionCreater(user);//之后，整合【问题】与【用户】信息
-//            questionDtoList.add(questionDto);//将整合好的信息添加到列表中去
-//        }
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample,new RowBounds(pageOffect,pageSize));//获取分页后的问题列表
+
         List<QuestionDto> questionDtoList = questions.stream().map(question -> {
             User user = userMapper.selectByPrimaryKey(question.getCreator());//之后通过作者id获取问题作者信息
             QuestionDto questionDto = new QuestionDto();//question传输工具类
@@ -194,6 +188,11 @@ public class QuestionServiceImpl implements QuestionService {
         question.setId(id);
         question.setViewCount(1);//每次阅读数+1
         return questionExtMapper.incView(question);
+    }
+
+    @Override
+    public List<Question> findQuestionByTag(Question question) {
+        return questionExtMapper.queryQuestionByTag(question);
     }
 
 }

@@ -15,5 +15,9 @@
         comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
       where id = #{id,jdbcType=INTEGER}
     </update>
+    <!--使用MySql正则表达式来实现对所有拥有相似标签的问题进行查找，按点赞数倒序排序，取12个-->
+    <select id="queryQuestionByTag" resultType="ac_one.gqw1024.community.ac_one_community.model.Question" parameterType="ac_one.gqw1024.community.ac_one_community.model.Question">
+      select id,title,question_tag from question where id != #{id} and question_tag regexp #{questionTag} order by like_count desc limit 12
+    </select>
 
 </mapper>

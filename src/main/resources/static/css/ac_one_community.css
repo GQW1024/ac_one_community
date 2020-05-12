@@ -2,10 +2,8 @@ body{
     background-color: #efefef;
 }
 a{
+    cursor: pointer;
     text-decoration: none;
-}
-li{
-    display: none;
 }
 .main{
     margin-top: 30px;
@@ -44,6 +42,9 @@ li{
 }
 .question-title{
     margin-top: 25px;
+}
+.question-tag{
+    margin-right: 8px;
 }
 .user-name{
     padding-top: 15px;
@@ -92,3 +93,20 @@ li{
 .second-comment-list .btn{
     margin: 10px 0px;
 }
+.icon-comment-count{
+    color: #999999;
+}
+.icon-comment-count:hover{
+    color: #499ef3;
+}
+.question-related{
+    line-height: 20px;
+    font-size: 12px;
+    margin-left: 0px;
+    list-style: none;
+    padding-left: 0px;
+}
+.question-wechat{
+    width: 100%;
+}
+

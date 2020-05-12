@@ -1,7 +1,9 @@
 package ac_one.gqw1024.community.ac_one_community.controller;
 
+import ac_one.gqw1024.community.ac_one_community.dao.QuestionExtMapper;
 import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
+import ac_one.gqw1024.community.ac_one_community.model.Question;
 import ac_one.gqw1024.community.ac_one_community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 首页Cntroller
@@ -18,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
 
     @Autowired
-    private UserMapper userMapper1;
+    private UserMapper userMapper;
 
     @Autowired
     private QuestionService questionService;

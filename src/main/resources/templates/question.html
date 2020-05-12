@@ -16,6 +16,8 @@
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <!--实现异步发送回复的js-->
     <script src="/js/comment.js" type="application/javascript"></script>
+    <!--日期格式-->
+    <script src="/js/moment.min.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:replace="~{navgition::nav}"></div><!--引入navgition.html中定义好的导航栏-->
@@ -36,6 +38,10 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDto.description}"></div>
                 <br/>
                 <hr>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <span class="label label-info question-tag" th:each="tag : ${questionDto.questionTag.split(',')}" th:text="${tag}"></span>
+                </div>
+                <br/>
                 <hr>
                 <a class="text-color-999" th:if="${session.user ne null && session.user.id eq questionDto.questionCreater.id}" th:href="@{'/publish/'+${questionDto.id}}">
                     <span class="glyphicon glyphicon-pencil"></span>
@@ -112,6 +118,7 @@
                             <span class="glyphicon glyphicon-thumbs-down icon"></span>
                             <!--二级回复按钮-->
                             <span class="glyphicon glyphicon-comment icon" th:data-comment-id="${comment.id}" onclick="collapseComments(this)"></span>
+                            <span class="icon-comment-count" th:id="${'parentSecCommentList'+comment.id}" th:text="${comment.commentCount}"></span>
                             <span class="float-right icon" th:text="${#dates.format(comment.gmtCreate,'YYYY-MM-dd')}"></span>
                         </div>
                         <!-- 二级评论列表 -->
@@ -170,8 +177,22 @@
                 </div>
             </div>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
+            <!--图片-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                <h5><strong>学习不是为了炫耀，而是为了让我们成为更好的人</strong></h5>
+                <img class="img-thumbnail question-wechat" src="/img/timg.png">
+            </div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <h4><strong>相关问题</strong></h4>
+            </div>
+            <hr>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                <ul class="question-related">
+                    <li th:each="question:${likeQuestions}">
+                        <a th:href="${'/question/'+question.id}" th:text="${question.title}"></a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

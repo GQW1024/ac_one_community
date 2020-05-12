@@ -1,3 +1,4 @@
+
 /**
  * 用户提交问题后异步刷新问题
  */
@@ -21,16 +22,17 @@ function postComment(parentId,content,type) {
                 contentType: "application/json; charset=UTF-8",
                 success: function (response) {
                     if (response.code == 200) {//如果回复问题成功则刷新回复列表
-                        $("#questionCommentContent").val("");
-                        $("#comment_count").text(parseInt($("#comment_count").text())+1);//先让回复数加1
                         if (type == 1) {
+                            $("#questionCommentContent").val("");//回复成功后将问题回复框中的内容清除
+                            $("#comment_count").text(parseInt($("#comment_count").text())+1);//让问题的回复数加1
                             ReloadQuestionComments(parentId, type);//回复成功后加载问题列表
                         }else if (type == 2){
+                            $("#parentSecCommentList"+parentId).text(parseInt($("#parentSecCommentList"+parentId).text())+1)
                             ReloadCommentComments(parentId,type,0);//如果回复的是二级回复，则加在对应回复的二级回复列表
                         }
 
                     } else {
-                        if (response.code == 2003) {
+                        if (response.code == 2003) {//这个返回code代表用户未登录
                             var ifAccepted = confirm(response.message);//弹出确认框
                             if (ifAccepted) {//返回值为true,代表点击了弹出框的确认按钮
                                 //获取gituser信息，登录用户
@@ -76,7 +78,7 @@ function CommentComment(e) {
     var parentCommentName= e.getAttribute("data-parentName");
     var content = $("#input-"+parentCommentID).val();
     if(parentCommentName != null){//如果被回复的二级回复的创建者的名字不为空
-        content = parentCommentName + content;
+        content = parentCommentName + content;//@被回复的用户名：+ 回复内容
     }
     postComment(parentCommentID,content,2);
 }
@@ -110,12 +112,12 @@ function collapseComments(e) {
     if(isopen){//如果有值，则代表示当前二级回复列表已经打开，那么就关闭二级评论
         //调用Jquery中的基本方法时，千万记得加上" $() "，否则默认调用JS中的方法，这样子会报 xxx is not a function 异常
         //$(e).css("color","#999999");
-        e.classList.remove("active");
+        e.classList.remove("active");//取消设置颜色
         comments.removeClass("in");
         e.removeAttribute("data-collapse");
     }else{//否则打开二级评论
         //$(e).css("color","#499ef3");
-        e.classList.add("active");
+        e.classList.add("active");//设置颜色
         comments.addClass("in");
         e.setAttribute("data-collapse","in");//添加打开二级评论的变量标识
     }
@@ -157,7 +159,8 @@ function ReloadQuestionComments(parentId,type){
                             "<span class=\"glyphicon glyphicon-thumbs-up icon\"></span>" +
                             "<span class=\"glyphicon glyphicon-thumbs-down icon\"></span>" +
                             "<span class=\"glyphicon glyphicon-comment icon\" data-comment-id=\""+data[i].id+"\" onclick=\"collapseComments(this)\"></span>" +
-                            "<span class=\"float-right icon\">" + formatDate(data[i].gmtCreate) + "</span>" +//${#dates.format(comment.gmtCreate,'YYYY-MM-dd')}
+                            "<span class=\"icon-comment-count\" id=\"parentSecCommentList"+data[i].id+"\">"+data[i].commentCount+"</span>" +
+                            "<span class=\"float-right icon\">" + moment(data[i].gmtCreate).format("YYYY-MM-DD") + "</span>" +//${#dates.format(comment.gmtCreate,'YYYY-MM-dd')}
                             "</div>" +
                             "<!-- 二级评论列表 -->"+
                             "<div class=\"col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse second-comment-list\" id=\"comment-id-"+data[i].id+"\"></div>"+
@@ -213,7 +216,7 @@ function ReloadCommentComments(parentId, type, thisCommentId) {
                             "<!--二级回复按钮-->"+
                             //后续制作点击后回复指定用户的功能，点击这个按钮后刷星列表，并在这个回复的下方显示回复框
                             "<span class=\"glyphicon glyphicon-comment icon\" onclick=\"ReloadCommentComments("+parentId+","+2+","+data[i].id+")\"></span>"+
-                            "<span class=\"float-right icon\">" + formatDate(data[i].gmtCreate) + "</span>"+
+                            "<span class=\"float-right icon\">" + moment(data[i].gmtCreate).format("YYYY-MM-DD") + "</span>"+
                             "</div>"+
                             "</div>"+
                             "</div>"+

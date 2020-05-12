@@ -4,6 +4,8 @@ import ac_one.gqw1024.community.ac_one_community.dto.PaginationDto;
 import ac_one.gqw1024.community.ac_one_community.dto.QuestionDto;
 import ac_one.gqw1024.community.ac_one_community.model.Question;
 
+import java.util.List;
+
 /**
  * Question表的service接口
  */
@@ -49,4 +51,6 @@ public interface QuestionService {
      * @return
      */
     Integer incView(Long id);
+
+    List<Question> findQuestionByTag(Question question);
 }

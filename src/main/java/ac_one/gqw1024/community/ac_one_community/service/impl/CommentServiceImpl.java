@@ -1,9 +1,6 @@
 package ac_one.gqw1024.community.ac_one_community.service.impl;
 
-import ac_one.gqw1024.community.ac_one_community.dao.CommentMapper;
-import ac_one.gqw1024.community.ac_one_community.dao.QuestionExtMapper;
-import ac_one.gqw1024.community.ac_one_community.dao.QuestionMapper;
-import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
+import ac_one.gqw1024.community.ac_one_community.dao.*;
 import ac_one.gqw1024.community.ac_one_community.dto.CommentDto;
 import ac_one.gqw1024.community.ac_one_community.enums.CommentTypeEnum;
 import ac_one.gqw1024.community.ac_one_community.exception.CustomizeErrorCode;
@@ -34,6 +31,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     CommentMapper commentMapper;
+    @Autowired
+    CommentExtMapper commentExtMapper;
 
     @Autowired
     QuestionMapper questionMapper;
@@ -77,15 +76,21 @@ public class CommentServiceImpl implements CommentService {
         }
         //如果用户回复的是另一个回复
         if(comment.getType() == CommentTypeEnum.COMMENT.getType()){
-            //判断该回复是否存在
+            //则判断该父回复是否存在
              Comment dbcomment = commentMapper.selectByPrimaryKey(comment.getParentId());
              if(dbcomment == null){
                  throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
              }
-             Question question = new Question();
-             question.setId(questionId);
-             question.setCommentCount(1);
-             questionExtMapper.incCommentCount(question);//评论数加1
+             //父类回复的被回复数加1
+             dbcomment.setCommentCount(1);//设置回复数增量
+             commentExtMapper.incCommentCount(dbcomment);
+
+             //问题的评论数加1
+//             Question question = new Question();
+//             question.setId(questionId);
+//             question.setCommentCount(1);//设置回复数增量
+//             questionExtMapper.incCommentCount(question);
+
         }
         else{
             //如果用户回复的是某个问题,判断该问题是否存在
