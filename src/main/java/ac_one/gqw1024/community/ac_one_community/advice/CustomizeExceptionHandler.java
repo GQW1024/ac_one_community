@@ -32,9 +32,9 @@ public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
         if("application/json".equals(contentType)||"application/json; charset=UTF-8".equals(contentType)){
             ResultDto resultDto = null;
             if(e instanceof CustomizeException){//如果是自己处理的JSON错误
-                resultDto = ResultDto.errorOf((CustomizeException) e);//设置返回这个
+                resultDto = ResultDto.errorOf((CustomizeException) e);//设置返回对应JSON解析失败错误（不直接转到错误界面的那种）
             }else{
-                resultDto = ResultDto.errorOf(CustomizeErrorCode.SYS_ERROR);//如果不是自己处理的JSON错误，则返回这个
+                resultDto = ResultDto.errorOf(CustomizeErrorCode.SYS_ERROR);//如果不是自己处理的JSON错误，则返回系统错误
             }
 
             try {

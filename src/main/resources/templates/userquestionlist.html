@@ -6,10 +6,10 @@
 </head>
 <body>
     <div th:fragment="user_question_list">
-        <div th:if="${section eq 'questions' && pagination.questionDtoList ne null}" class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
+        <div th:if="${section eq 'questions' && pagination.data ne null}" class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
             <h2><span th:text="${sectionName}"></span></h2>
             <hr>
-            <div class="media" th:each="question : ${pagination.questionDtoList}"><!--使用th:each遍历question列表并显示-->
+            <div class="media" th:each="question : ${pagination.data}"><!--使用th:each遍历question列表并显示-->
                 <div class="media-left">
                     <a href="#">
                         <img class="media-object img-rounded main_list_item_imgSize" th:src="${question.questionCreater.avatarUrl}" alt="...">
@@ -23,8 +23,13 @@
                         <span th:text="'此问题由【'+${question.questionCreater.name}+'】所发布————'"></span>
                         <span th:text="${question.commentCount}+'个回复 · '"></span>
                         <span th:text="${question.viewCount}+'次浏览 · '"></span>
-                        <span th:text="${#dates.format(question.gmtCreate,'YYYY-MM-dd HH:mm')}+'创建'"></span>
+                        <span th:text="${#dates.format(question.gmtCreate,'YYYY-MM-dd HH:mm')}+'创建 · '"></span>
                     </span>
+                    <a class="text-color-999" th:if="${session.user ne null && session.user.id eq question.creator}" th:href="@{'/publish/'+${question.id}}">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        编辑
+                    </a>
+                    <hr>
                 </div>
             </div>
             <nav aria-label="Page navigation">

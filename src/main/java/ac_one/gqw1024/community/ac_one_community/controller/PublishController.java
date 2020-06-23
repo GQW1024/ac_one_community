@@ -1,5 +1,6 @@
 package ac_one.gqw1024.community.ac_one_community.controller;
 
+import ac_one.gqw1024.community.ac_one_community.cache.TagCache;
 import ac_one.gqw1024.community.ac_one_community.model.Question;
 import ac_one.gqw1024.community.ac_one_community.model.User;
 import ac_one.gqw1024.community.ac_one_community.service.QuestionService;
@@ -22,9 +23,10 @@ public class PublishController {
 
         User user =(User) request.getSession().getAttribute("user");
         if (user==null){//如果用户没有登录，直接返回主页
-            modelAndView.setViewName("index");
+            modelAndView.setViewName("redirect:/");
             return modelAndView;
         }
+        modelAndView.addObject("tags",TagCache.get());
         modelAndView.setViewName("publish");
         return modelAndView;
     }
@@ -46,6 +48,9 @@ public class PublishController {
             @RequestParam("tag")String questionTag,
             @RequestParam(value = "questionID",required = false)Long questionID,
             ModelAndView modelAndView){
+
+        modelAndView.setViewName("publish");
+
         if(creator == null || title.isEmpty() || description.isEmpty() || questionTag.isEmpty()){
             modelAndView.addObject("error","错误提交！可能存在空值");
 
@@ -53,7 +58,14 @@ public class PublishController {
             modelAndView.addObject("description",description);
             modelAndView.addObject("questionTag",questionTag);
 
-            modelAndView.setViewName("publish");
+            return modelAndView;
+        }else if (!TagCache.isValid(questionTag)){//如果标签不合规
+            modelAndView.addObject("error","错误提交，标签不合规！！！");
+
+            modelAndView.addObject("title",title);//保证前端就算出错，已填写的数据也不消失
+            modelAndView.addObject("description",description);
+            modelAndView.addObject("questionTag",questionTag);
+
             return modelAndView;
         }
         //设置问题的信息
@@ -74,13 +86,21 @@ public class PublishController {
     }
 
     @RequestMapping("/publish/{id}")
-    public ModelAndView editQuestion (@PathVariable("id")Long id,ModelAndView modelAndView){
+    public ModelAndView editQuestion (@PathVariable("id")Long id,ModelAndView modelAndView,HttpServletRequest request){
+
+        User user =(User) request.getSession().getAttribute("user");
+        if (user==null){//如果用户没有登录，直接返回主页
+            modelAndView.setViewName("redirect:/");
+            return modelAndView;
+        }
+
         Question question = questionService.getById(id);
         modelAndView.addObject("title",question.getTitle());//保证前端就算出错，已填写的数据也不消失
         modelAndView.addObject("description",question.getDescription());
         modelAndView.addObject("questionTag",question.getQuestionTag());
         modelAndView.addObject("creatorID",question.getCreator());
         modelAndView.addObject("questionID",question.getId());//【编辑问题】与【发布问题】的主要区分点，就是是否存在questionID这个值
+        modelAndView.addObject("tags", TagCache.get());//前端页面的所有标签
         modelAndView.setViewName("publish");
         return modelAndView;
     }

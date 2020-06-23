@@ -53,3 +53,26 @@ $(function () {//publish.html 用
         }
     })
 })
+
+/**
+ * 向tag框中添加标签
+ * @param value
+ */
+function selectTag(e) {
+    var value = e.getAttribute("data");
+    var previous = $("#tag").val();
+    if(previous.indexOf(value) == -1) {//当标签框中没有对应的标签是才将该标签添加进去，防止标签重复。
+        if (previous) {
+            $("#tag").val(previous + "," + value);
+        } else {
+            $("#tag").val(value);
+        }
+    }
+}
+
+/**
+ * 点击显示选择标签
+ */
+function showSelectTag() {
+    $("#select-tag").show();
+}

@@ -19,9 +19,11 @@ import java.util.List;
  *     boolean showEndPage;             是否显示【最后一页】按钮
  */
 @Data
-public class PaginationDto {
-    List<QuestionDto> questionDtoList;
-    List<CommentDto> commentDtoList;
+public class PaginationDto<T> {
+//    List<QuestionDto> questionDtoList;
+//    List<CommentDto> commentDtoList;
+//    List<NotificationDto> notificationDtoList;
+    List<T> data;
     Integer page;
     Integer totalPage;
     List<Integer> pages = new ArrayList<>();

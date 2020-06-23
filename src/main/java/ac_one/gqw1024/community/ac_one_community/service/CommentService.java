@@ -3,6 +3,7 @@ package ac_one.gqw1024.community.ac_one_community.service;
 import ac_one.gqw1024.community.ac_one_community.dto.CommentDto;
 import ac_one.gqw1024.community.ac_one_community.enums.CommentTypeEnum;
 import ac_one.gqw1024.community.ac_one_community.model.Comment;
+import ac_one.gqw1024.community.ac_one_community.model.User;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface CommentService {
      * @param questionId
      * @return
      */
-    int insert(Comment comment, Long questionId);
+    int insert(Comment comment, Long questionId, User commentator);
 
     List<CommentDto> listByQuestionIdAndType(Long id, int page, int pageSize, CommentTypeEnum type);
 }

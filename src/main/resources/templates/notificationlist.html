@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="notification_list">
+        <div th:if="${section eq 'replies' && pagination.data ne null}" class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
+            <h2><span th:text="${sectionName}"></span></h2>
+            <hr>
+            <div class="media" th:each="notification : ${pagination.data}"><!--使用th:each遍历question列表并显示-->
+                <div class="media-left">
+<!--                    <a href="#">-->
+<!--                        <img class="media-object img-rounded main_list_item_imgSize" th:src="${question.questionCreater.avatarUrl}" alt="...">-->
+<!--                    </a>-->
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        用户<span th:text="${notification.notifierName+notification.typename}"></span>
+                        <a th:href="@{'/notification/'+${notification.id}}" th:text="${notification.outerTitle}"></a>
+                        <span th:if="${notification.status} eq 0" class="label label-danger">未读</span>
+                    </h4>
+                    <span class="text_desc">
+                        <span th:text="${#dates.format(notification.gmtCreate,'YYYY-MM-dd HH:mm')}+'创建 · '"></span>
+                    </span>
+                    <hr>
+                </div>
+            </div>
+            <nav aria-label="Page navigation">
+                <ul id="pageSelect" class="pagination">
+                    <li th:if="${pagination.showFirstpage} eq true">
+                        <a href="/?page=1" aria-label="Previous">
+                            <span aria-hidden="true">&lt;&lt;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pagination.showPrevious} eq true"><!--上一页-->
+                        <a th:with="Lpage=${pagination.page}-1" th:href="@{'/profile/replies?page='+${Lpage}}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <!--如果当前页码时被选中的页码，则设置高亮显示-->
+                    <li th:each="page : ${pagination.pages}" th:class="${page eq pagination.page}?'active':''"><a th:href="@{'/profile/replies?page='+${page}}" th:text="${page}"></a></li>
+
+                    <li th:if="${pagination.showNext} eq true"><!--下一页-->
+                        <a th:with="Rpage=${pagination.page}+1" th:href="@{'/profile/replies?page='+${Rpage}}" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pagination.showEndPage} eq true">
+                        <a th:href="'/profile/replies?page='+${pagination.totalPage}" aria-label="Next">
+                            <span aria-hidden="true">&gt;&gt;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

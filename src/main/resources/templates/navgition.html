@@ -46,6 +46,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li th:if="${session.user} eq null"><a href="https://github.com/login/oauth/authorize?client_id=68f471c8ef16a67e27ad&redirect_uri=http://localhost:8080/callback&scope=user&state=1" >登录</a></li><!--[向git请求授权访问用户信息]   th:if="${session} eq null}"-->
                     <li th:if="${session.user} ne null"><a href="/publish" >发起+</a></li>
+                    <li th:if="${session.user} ne null"><a href="/profile/replies">通知 <span class="badge" th:text="${session.unreadCount}"></span></a></li>
                     <li th:if="${session.user} ne null" class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             <span th:text="${session.user.name}"></span>
@@ -53,7 +54,6 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/profile/questions">我的问题</a></li>
-                            <li><a href="/profile/replies">最新回复</a></li>
                             <li><a href="#">个人资料</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="/doLoginOut">退出登录</a></li>

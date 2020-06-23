@@ -9,6 +9,8 @@
     <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/ac_one_community.css">
+    <!-- 加载服务文本编辑css样式-->
+    <link rel="stylesheet" href="/css/editormd.min.css">
 
     <!--Jquery.js-->
     <script src="/js/jquery-3.2.1.min.js" type="application/javascript"></script>
@@ -16,6 +18,8 @@
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <!-- publish专用js -->
     <script src="/js/publish.js" type="application/javascript"></script>
+    <!-- 加载富文本编辑的js -->
+    <script src="/js/editormd.min.js" type="application/javascript"></script>
 
 </head>
 <body>
@@ -38,7 +42,32 @@
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签</label>
-                    <input type="text" class="form-control" autocomplete="off" th:value="${questionTag}" id="tag" name="tag" placeholder="输入标签,使用，可以将标签分隔开">
+                    <input type="text" class="form-control" autocomplete="off" th:value="${questionTag}" id="tag" name="tag" placeholder="输入标签，使用，可以将标签分隔开" onclick="showSelectTag()">
+
+                    <div id="select-tag" class="publish-tag-tab">
+
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" th:each="selectCategory,selectCategoryStat : ${tags}" th:class="${selectCategoryStat.first ? 'active':''}">
+                                <a th:href="${'#'+selectCategory.categoryName}" aria-controls="home" role="tab"
+                                   data-toggle="tab" th:text="${selectCategory.categoryName}"></a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane"
+                                 th:each="selectCategory,selectCategoryStat : ${tags}"
+                                 th:id="${selectCategory.categoryName}"
+                                 th:class="${selectCategoryStat.first ? 'tab-pane active':'tab-pane'}">
+                                <span  class="label label-info" th:each="selectTag:${selectCategory.tags}">
+                                    <span class="glyphicon glyphicon-tags"
+                                          onclick="selectTag(this)" th:data="${selectTag}" th:text="${'   '+selectTag}"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
                 <div class="form-group container-fluid main"><!--设置块内元素垂直居中-->
                     <div class="row">

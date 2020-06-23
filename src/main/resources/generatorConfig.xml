@@ -76,5 +76,9 @@
             <!--如果设置为true，则生成的实体类中的getter和setter方法的名字会变为全部大写；设置为false则会采用驼峰标识，这也是默认的设置-->
             <property name="useActualColumnNames" value="false"/>
         </table>
+        <table tableName="notification" domainObjectName="Notification">
+            <!--如果设置为true，则生成的实体类中的getter和setter方法的名字会变为全部大写；设置为false则会采用驼峰标识，这也是默认的设置-->
+            <property name="useActualColumnNames" value="false"/>
+        </table>
     </context>
 </generatorConfiguration>

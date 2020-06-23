@@ -44,7 +44,7 @@ public class CommentController {
          comment.setType(commentCreateDto.getType());
          comment.setGmtCreate(System.currentTimeMillis());
          comment.setGmtModified(comment.getGmtCreate());
-         commentService.insert(comment, commentCreateDto.getQuestionId());//存入回复数据，并为改问题回复数加1
+         commentService.insert(comment, commentCreateDto.getQuestionId(),user);//存入回复数据，并为改问题回复数加1
          return ResultDto.successOf();
     }
 
@@ -67,14 +67,4 @@ public class CommentController {
          return commentDtoList;
     }
 
-//    //请求某个回复的二级回复列表
-//    @ResponseBody
-//    @GetMapping(value = "/comment/{parentId}")
-//    public ResultDto<List<CommentDto>> SecondCommentList(@PathVariable Long parentId,//父类回复的ID
-//                                       @RequestParam(value = "page",defaultValue = "1")int page,
-//                                       @RequestParam(value = "pageSize",defaultValue = "5")int pageSize
-//                                        ){
-//        List<CommentDto> SecondCommentDtoList = commentService.listByQuestionIdAndType(parentId, page, pageSize, CommentTypeEnum.COMMENT);
-//         return ResultDto.successOf(SecondCommentDtoList);
-//    }
 }

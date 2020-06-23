@@ -19,17 +19,14 @@
 <div th:replace="~{navgition::nav}"></div><!--引入navgition.html中定义好的导航栏-->
 <div class="container-fluid main"><!-- container-fluid begin-->
     <div th:if="${session.user} ne null" class="row">
-        <div th:replace="~{userquestionlist::user_question_list}"></div><!--问题区块-->
-        <div th:if="${section eq 'replies'}" class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2><span th:text="${sectionName}"></span></h2>
-            <hr>
-        </div>
+        <div th:if="${section eq 'questions'}" class="col-lg-9 col-md-12 col-sm-12 col-xs-12" th:replace="~{userquestionlist::user_question_list}"></div><!--问题区块-->
+        <div th:if="${section eq 'replies'}" class="col-lg-9 col-md-12 col-sm-12 col-xs-12" th:replace="~{notificationlist::notification_list}"></div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
             <div class="list-group right-section">
                 <a th:class="${section eq 'questions'}?'list-group-item active':'list-group-item'" href="/profile/questions">我的发布</a>
                 <a th:class="${section eq 'replies'}?'list-group-item active':'list-group-item'" href="/profile/replies">
                     最新回复
-                    <span class="badge">44</span>
+                    <span class="badge" th:text="${session.unreadCount}"></span>
                 </a>
             </div>
             <hr/>

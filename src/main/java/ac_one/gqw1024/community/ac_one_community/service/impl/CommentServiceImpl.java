@@ -3,6 +3,8 @@ package ac_one.gqw1024.community.ac_one_community.service.impl;
 import ac_one.gqw1024.community.ac_one_community.dao.*;
 import ac_one.gqw1024.community.ac_one_community.dto.CommentDto;
 import ac_one.gqw1024.community.ac_one_community.enums.CommentTypeEnum;
+import ac_one.gqw1024.community.ac_one_community.enums.NotificationTypeEnum;
+import ac_one.gqw1024.community.ac_one_community.enums.NotificationStatusEnum;
 import ac_one.gqw1024.community.ac_one_community.exception.CustomizeErrorCode;
 import ac_one.gqw1024.community.ac_one_community.exception.CustomizeException;
 import ac_one.gqw1024.community.ac_one_community.model.*;
@@ -42,15 +44,19 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    NotificationMapper notificationMapper;
+
     /**
      * 插入回复事务，其中包含插入回复，以及修改回复数两个事务
      * 使用@Transactional注解添加的事务处理，使这两个操作要么都成功，要么都失败
      * @param comment
      * @param questionId
+     * @param commentator 当前评论的用户
      * @return
      */
     @Override
-    public int insert(Comment comment, Long questionId) {
+    public int insert(Comment comment, Long questionId ,User commentator) {
         //如果回复的父类id为空，或等于0
         if(comment.getParentId() == null || comment.getParentId() == 0){
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
@@ -68,10 +74,8 @@ public class CommentServiceImpl implements CommentService {
         if(comment.getCommentator() == null || comment.getCommentator() == 0){
             throw new CustomizeException(CustomizeErrorCode.NO_LOGIN);
         }
-        //查询当前评论的用户
-        User user = userMapper.selectByPrimaryKey(comment.getCommentator());
         //如果用户未注册,这里是第二次验证用户，防止意外
-        if(user == null){
+        if(commentator == null){
             throw new CustomizeException(CustomizeErrorCode.USER_NOT_REGISTER);
         }
         //如果用户回复的是另一个回复
@@ -91,6 +95,7 @@ public class CommentServiceImpl implements CommentService {
 //             question.setCommentCount(1);//设置回复数增量
 //             questionExtMapper.incCommentCount(question);
 
+            createNotify(comment,dbcomment.getCommentator(), NotificationTypeEnum.REPLY_COMMENT.getType(),commentator.getName(),dbcomment.getContent(),questionId);//插入通知
         }
         else{
             //如果用户回复的是某个问题,判断该问题是否存在
@@ -100,8 +105,30 @@ public class CommentServiceImpl implements CommentService {
             }
             dbquestion.setCommentCount(1);
             questionExtMapper.incCommentCount(dbquestion);//问题评论数加1
+
+            createNotify(comment,dbquestion.getCreator(), NotificationTypeEnum.REPLY_QUESTION.getType(),commentator.getName(),dbquestion.getTitle(),questionId);//插入通知
         }
         return commentMapper.insertSelective(comment);
+    }
+
+    /**
+     * 方法作用：创建通知
+     * @param comment  回复信息
+     * @param receiverId  通知接收者的Id
+     * @param type 被回复对象的类型
+     */
+    public void createNotify(Comment comment,Long receiverId,int type,String notifierName,String outerTitle,Long outerId){
+        //插入并向用户发送通知
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(type);//被回复的对象的类型
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());//设置阅读状态
+        notification.setOuterid(outerId);//**直接将被回复的对象设为问题的ID，毕竟只有问题页面，只能跳这了，其他的照常！！！**
+        notification.setNotifier(comment.getCommentator());//通知的发布者
+        notification.setReceiver(receiverId);//通知的接收者
+        notification.setNotifierName(notifierName);//设置通知的发布者的名字
+        notification.setOuterTitle(outerTitle);//设置回复对象的title
+        notificationMapper.insertSelective(notification);
     }
 
     /**
