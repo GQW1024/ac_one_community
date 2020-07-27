@@ -58,7 +58,8 @@ public class GithubProvider {
         try {
             Response response = client.newCall(request).execute();// 3 利用OkHttpClient来将请求提交发送出去
             //由于接收过来的已经是JSON格式的数据了，所以这里直接用parseObject()方法直接转为GithubUser类型返回。
-            return JSON.parseObject(response.body().string(),GithubUser.class);//fastjson会自动识别下划线，转为驼峰命名
+            GithubUser githubUser = JSON.parseObject(response.body().string(),GithubUser.class);
+            return githubUser;//fastjson会自动识别下划线，转为驼峰命名
         } catch (IOException e) {
             e.printStackTrace();
         }

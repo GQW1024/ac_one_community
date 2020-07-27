@@ -52,6 +52,7 @@ public class AuthorizeController {
             @RequestParam(name = "code",required = false) String code,
             @RequestParam(name = "state",required = false) String state,
             HttpServletResponse response,
+            HttpSession session,
             ModelAndView modelAndView) throws IOException {
 
         modelAndView.setViewName("redirect:/");//设置重定向目标为首页
@@ -65,13 +66,14 @@ public class AuthorizeController {
         String access_token =githubProvider.getAccessToken(tockenDTO);//获得返回的用户认证：access_token，并将其转为JSON字符串，方便使用        modelAndView.setViewName("index");
         //System.out.println(access_token);
         GithubUser githubUser = githubProvider.getUser(access_token);//通过access_token向github获取用户信息
-
-        if(githubUser != null && githubUser.getId() != null) {  //双重保险，github用户信息必定不能为空
-            String usertoken = null;
-            if ((usertoken = userService.githubUserLogin(githubUser)) != null) {//注册登录用户信息，如果，用户已存在或用户注册成功,将其token取出
+        System.out.println("+++++++++++"+githubUser);
+        if(githubUser != null) {  //github用户信息必定不能为空
+            String usertoken = userService.githubUserLogin(githubUser);
+            if (usertoken.length()!=0) {//注册登录用户信息，如果，用户已存在或用户注册成功,将其token取出
                 //将可以指定用户信息的token添加到cookie中，防止因服务器重启而导致的用户端重新登录的情况
                 Cookie ctoken = new Cookie("token", usertoken);
                 ctoken.setMaxAge(7 * 24 * 60 * 60);//设置为7天过期
+                System.out.println("usertoken："+usertoken);
                 response.addCookie(ctoken);
             }
         }

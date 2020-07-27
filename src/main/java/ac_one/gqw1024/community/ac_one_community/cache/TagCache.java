@@ -20,11 +20,11 @@ public class TagCache {
 
         TagDto program = new TagDto();
         program.setCategoryName("开发语言");
-        program.setTags(Arrays.asList("js","php","css","html","java","node","python","js","php","css","html","java","node","python","js","php","css","html","java","node","python","js","php","css","html","java","node","python"));
+        program.setTags(Arrays.asList("js","php","css","html","java","node","python"));
 
         TagDto framework = new TagDto();
         framework.setCategoryName("平台框架");
-        framework.setTags(Arrays.asList("Spring","MyBatis","SpringMVC","SSM","SpringBoot","BootStrap"));
+        framework.setTags(Arrays.asList("Spring","MyBatis","SpringMVC","SSM","SpringBoot","BootStrap","Git"));
 
         TagDto server = new TagDto();
         server.setCategoryName("服务器");
@@ -43,8 +43,11 @@ public class TagCache {
      */
     public static boolean isValid(String tags){
         String[] split = StringUtils.split(tags, ",");
+        List<String> splitList = Arrays.stream(split).collect(Collectors.toList());
+
         List<TagDto> tagDtos = get();
+        List<String> tagList = tagDtos.stream().flatMap(tag -> tag.getTags().stream()).collect(Collectors.toList());
         //使用流将每一个tagDto中的tags合并为一个List之后判断前端传回的列表是否包含在其中
-        return tagDtos.stream().map(tag -> tag.getTags().stream()).collect(Collectors.toList()).contains(split);
+        return tagList.containsAll(splitList);
     }
 }

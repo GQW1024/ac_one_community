@@ -57,6 +57,7 @@ public class PublishController {
             modelAndView.addObject("title",title);//保证前端就算出错，已填写的数据也不消失
             modelAndView.addObject("description",description);
             modelAndView.addObject("questionTag",questionTag);
+            modelAndView.addObject("tags", TagCache.get());//前端页面的所有标签
 
             return modelAndView;
         }else if (!TagCache.isValid(questionTag)){//如果标签不合规
@@ -65,6 +66,7 @@ public class PublishController {
             modelAndView.addObject("title",title);//保证前端就算出错，已填写的数据也不消失
             modelAndView.addObject("description",description);
             modelAndView.addObject("questionTag",questionTag);
+            modelAndView.addObject("tags", TagCache.get());//前端页面的所有标签
 
             return modelAndView;
         }

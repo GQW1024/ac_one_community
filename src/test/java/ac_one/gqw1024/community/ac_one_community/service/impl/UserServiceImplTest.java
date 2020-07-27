@@ -4,34 +4,35 @@ import ac_one.gqw1024.community.ac_one_community.dao.UserMapper;
 import ac_one.gqw1024.community.ac_one_community.dto.GithubUser;
 import ac_one.gqw1024.community.ac_one_community.model.User;
 import ac_one.gqw1024.community.ac_one_community.model.UserExample;
-import ac_one.gqw1024.community.ac_one_community.service.UserService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.Assert.*;
+
 /**
- * 这个事务实现类主要用来进行一些关于用户的事务
+ * @author GQW1024
+ * @version 1.0
+ * @date 2020/7/27 18:09
  */
-@Service
-@Transactional//为这个service中的所有事务添加事务处理
-public class UserServiceImpl implements UserService {
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+public class UserServiceImplTest {
     @Autowired
-    private UserMapper userMapper;
+    UserMapper userMapper;
 
-    /**
-     * github用户的登录注册业务方法
-     * 如果该Github用户是第一次登录，则将该用户注册
-     * 如果该Github用户是老用户，已经存在了账户，则更新该账户的信息
-     * @param githubUser
-     * @return
-     */
-    @Override
-    public String githubUserLogin(GithubUser githubUser) {
-
+    @Test
+    public void githubUserLogin() {
+        GithubUser githubUser = new GithubUser();
+        githubUser.setId(1234l);
+        githubUser.setAvatarUrl("userfacePath");
+        githubUser.setBio("test");
+        githubUser.setName("GQW1024");
         UserExample example = new UserExample();
         example.createCriteria()
                 .andAccountIdEqualTo(githubUser.getId().toString());
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
             updateexample.createCriteria()
                     .andIdEqualTo(updateUsermessage.getId());
             if(userMapper.updateByExampleSelective(updateUsermessage,updateexample)==1) {//更新GitHub用户的一些信息，成功后返回token
-                return token;
+                System.out.println(token);
             }
         }
         else{//否则，数据库中没有用户信息
@@ -68,9 +69,8 @@ public class UserServiceImpl implements UserService {
             int iSsuccess = userMapper.insertSelective(newuser); //插入当前用户的数据
             System.out.println("iSsuccess："+iSsuccess);
             if(iSsuccess == 1){//如果注册事务成功
-                return token;//返回token
+                System.out.println(token);//返回token
             }
         }
-        return null;
     }
 }
